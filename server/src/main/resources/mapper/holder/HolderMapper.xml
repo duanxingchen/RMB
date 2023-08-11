@@ -20,6 +20,7 @@
     <result column="sort_1_5" jdbcType="DOUBLE" property="sort15" />
     <result column="sort_1_6" jdbcType="DOUBLE" property="sort16" />
     <result column="market" jdbcType="DOUBLE" property="market" />
+    <result column="avg_assets" jdbcType="DOUBLE" property="avgAssets" />
     <result column="flow_market" jdbcType="DOUBLE" property="flowMarket" />
     <result column="ten_flow_holder_ratio" jdbcType="DOUBLE" property="tenFlowHolderRatio" />
     <result column="makers_ratio" jdbcType="DOUBLE" property="makersRatio" />
@@ -35,35 +36,30 @@
 
   <sql id="Base_Column_List">
     id, code, name, holder_name,report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
-    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, flow_market, ten_flow_holder_ratio,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market,avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, create_time, update_time, dong_cai_industry, industry_big,
     industry_middle, listing_date
   </sql>
 
 
-  <insert id="batchInsert" parameterType="java.util.List">
+  <insert id="insert" parameterType="dzr.holder.entity.Holder">
     insert into statistics.holder
     (code, name,holder_name, report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
-    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, flow_market, ten_flow_holder_ratio,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, dong_cai_industry, industry_big,
     industry_middle, listing_date)
     values
-    <foreach collection="list" item="holder" separator=",">
-      (#{holder.code},#{holder.name},#{holder.holderName},#{holder.reportDate},#{holder.priceRatio},#{holder.noticePrice},#{holder.price},#{holder.makerVsSanHuRatio},
-      #{holder.holderNum},#{holder.oderNum3},#{holder.oderNum5},#{holder.sort12},#{holder.sort13},
-      #{holder.sort14},#{holder.sort15},#{holder.sort16},
-      #{holder.market},#{holder.flowMarket},#{holder.tenFlowHolderRatio},
-      #{holder.makersRatio},#{holder.makersCost},#{holder.sanHuRatio},#{holder.dongCaiIndustry},
-      #{holder.industryBig},#{holder.industryMiddle},#{holder.listingDate})
-    </foreach>
+      (#{code},#{name},#{holderName},#{reportDate},#{priceRatio},#{noticePrice},#{price},#{makerVsSanHuRatio},
+      #{holderNum},#{oderNum3},#{oderNum5},#{sort12},#{sort13},
+      #{sort14},#{sort15},#{sort16},
+      #{market},#{avgAssets},#{flowMarket},#{tenFlowHolderRatio},
+      #{makersRatio},#{makersCost},#{sanHuRatio},#{dongCaiIndustry},
+      #{industryBig},#{industryMiddle},#{listingDate})
     on duplicate key update update_time = now()
   </insert>
 
-  <delete id="batchDelete" parameterType="java.util.List">
-    delete from statistics.holder where code in
-        <foreach collection="list" item="holder" separator="," open="(" close=")" index="">
-          #{holder.code}
-        </foreach>
+  <delete id="delete" parameterType="java.util.List">
+    delete from statistics.holder where code = #{code}
   </delete>
 
 

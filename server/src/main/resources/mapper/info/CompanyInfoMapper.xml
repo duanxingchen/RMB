@@ -40,17 +40,22 @@
     </foreach>
   </select>
 
-  <insert id="batchInsert" parameterType="java.util.List">
+  <select id="selectOneByCode"  resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    from company_info
+    where code = #{code}
+  </select>
+
+  <insert id="insert" parameterType="dzr.info.entity.CompanyInfo">
     insert into company_info
     (code, name, listing_date, establishment_date, issuance, issue_price, dongcai_industry,
     securities_industry, legal_representative, chairman, area, registered_capital, employees)
     values
-    <foreach collection="list" item="tmp" separator=",">
-      (#{tmp.code},#{tmp.name},#{tmp.listingDate},#{tmp.establishmentDate},
-      #{tmp.issuance},#{tmp.issuePrice},#{tmp.dongcaiIndustry},#{tmp.securitiesIndustry},
-      #{tmp.legalRepresentative},#{tmp.chairman},#{tmp.area},#{tmp.registeredCapital},
-      #{tmp.employees})
-    </foreach>
+      (#{code},#{name},#{listingDate},#{establishmentDate},
+      #{issuance},#{issuePrice},#{dongcaiIndustry},#{securitiesIndustry},
+      #{legalRepresentative},#{chairman},#{area},#{registeredCapital},
+      #{employees})
     on duplicate key update update_time = now()
   </insert>
 

@@ -64,4 +64,11 @@
       #{code}
     </foreach>
   </select>
+
+  <select id="selectByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from holder_num
+    where code = #{code}
+  </select>
 </mapper>

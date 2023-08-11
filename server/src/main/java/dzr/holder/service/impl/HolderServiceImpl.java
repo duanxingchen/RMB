@@ -41,7 +41,6 @@ public class HolderServiceImpl implements HolderService {
     private final HolderNumMapper holderNumMapper;
     private final TransactionMapper transactionMapper;
     private final HolderMapper holderMapper;
-    private final OrganizationDetailRateMapper organizationDetailRateMapper;
 
     public void calculate() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
@@ -49,9 +48,8 @@ public class HolderServiceImpl implements HolderService {
             List<TenFlowHolder> tenFlowHolders = tenFlowHolderMapper.selectByCode(securityCode.getCode());
             List<HolderNum> holderNums =  holderNumMapper.selectByCode(securityCode.getCode());
             List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
-            List<OrganizationDetailRate> organizationDetailRates = organizationDetailRateMapper.selectByCode(securityCode.getCode());
 
-            HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders, organizationDetailRates);
+            HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders);
             holderDto.doit();
         });
     }
@@ -63,27 +61,49 @@ public class HolderServiceImpl implements HolderService {
         private SecurityCode securityCode;
         private CompanyInfo companyInfo;
         private List<TenFlowHolder> tenFlowHolders;
-        private List<OrganizationDetailRate> organizationDetailRates;
 
-        private HolderDto(SecurityCode securityCode, Holder holder, List<HolderNum> holderNums, List<Transaction> transactions, CompanyInfo companyInfo, List<TenFlowHolder> tenFlowHolders, List<OrganizationDetailRate> organizationDetailRates) {
+        private HolderDto(SecurityCode securityCode, Holder holder, List<HolderNum> holderNums, List<Transaction> transactions, CompanyInfo companyInfo, List<TenFlowHolder> tenFlowHolders) {
             this.holder = holder;
             this.holderNums = holderNums;
             this.transactions = transactions;
             this.securityCode = securityCode;
             this.companyInfo = companyInfo;
             this.tenFlowHolders = tenFlowHolders;
-            this.organizationDetailRates = organizationDetailRates;
         }
         public void doit(){
             try {
+                transactions = transactions.stream().sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
+                holderNums = holderNums.stream().sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
+
+                /**
+                 * 人数对比
+                 */
                 calculateRate();
+                /**
+                 * 行业和上市时间
+                 */
                 setIndustryAndListingDate();
+                /**
+                 * 十大流通股东
+                 */
                 calculateTenFlowHolderRatio();
+                /**
+                 * 主力与散户对比
+                 */
                 calculateMakersRateWithSanHuRate();
+                /**
+                 * 流通市值和人均持股金额（万）
+                 */
                 calculateFlowMarket();
+                /**
+                 * 庄家成本
+                 */
                 calculateMakersCost();
-                calculateHolderName();
+                /**
+                 * 价格
+                 */
                 calculatePrice();
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -91,24 +111,17 @@ public class HolderServiceImpl implements HolderService {
             holderMapper.insert(holder);
         }
 
-
-        private void calculateHolderName() {
-            List<OrganizationDetailRate> holderName = organizationDetailRates.stream()
-                    .filter(organizationDetailRate -> organizationDetailRate.getEndDate().getTime() == DateUtils.strToDate("2022-09-30 00:00:00").getTime())
-                    .collect(Collectors.toList());
-            if (holderName.size() >0 ){
-                holder.setHolderName(holderName.get(0).getHolderName());
-            }
-        }
-
         private void calculatePrice() {
             Date when = holderNums.get(0).getHoldNoticeDate();
-            List<Transaction> collect = transactions.stream().filter(transaction -> transaction.getReportDate().before(when))
-                    .collect(Collectors.toList());
-            collect.sort(Comparator.comparing(Transaction::getReportDate).reversed());
             holder.setPrice(transactions.get(0).getTclose());
 
-            holder.setNoticePrice(collect.get(0).getTclose());
+            for (Transaction transaction : transactions) {
+                if (transaction.getReportDate().before(when)) {
+                    holder.setNoticePrice(transaction.getTclose());
+                    break;
+                }
+            }
+
             if (holder.getPrice() != null && holder.getMakersCost() != null){
                 holder.setPriceRatio(MathUtils.doubleRetain2Bit(100*(holder.getPrice()-holder.getMakersCost())/holder.getMakersCost()));
             }
@@ -318,14 +331,12 @@ public class HolderServiceImpl implements HolderService {
                     .filter(tenFlowHolder -> tenFlowHolder.getReportDate().getTime() == newFlowHolders.getReportDate().getTime())
                     .map(tenFlowHolder -> tenFlowHolder.getFreeHoldnumRatio())
                     .mapToDouble(BigDecimal::doubleValue).sum();
-
-
-
             holder.setTenFlowHolderRatio(sum);
         }
 
         private void calculateFlowMarket(){
             holder.setFlowMarket(MathUtils.doubleRetain2Bit(holder.getMarket()*(100-holder.getTenFlowHolderRatio())/100));
+            holder.setAvgAssets(MathUtils.doubleRetain2Bit(holder.getFlowMarket()*10000/holder.getHolderNum()));
         }
     }
 

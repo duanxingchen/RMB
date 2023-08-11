@@ -34,11 +34,6 @@ public class CacheConfiguration {
 
     @Bean
     public CacheManager cacheManager() {
-        System.out.println(concurrencyLevel);
-        System.out.println(maximumSize);
-        System.out.println(expireAfterWrite);
-        System.out.println(refreshAfterWrite);
-        System.out.println(initialCapacity);
 
         CacheBuilder<Object, Object> ObjectCacheBuilder = CacheBuilder.newBuilder()
                 // 存活时间（30秒内没有被访问则被移除）

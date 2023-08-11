@@ -27,6 +27,7 @@ public class TenFlowHolderInitData {
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
+            log.info(securityCode.toString());
             ArrayList<TenFlowHolder> tenFlowHolders = new ArrayList<>();
             ArrayList<String> reportDate = ReportDateUtils.getReportDateWithString(securityCode.getListingDate());
             for (int j = 0; j < reportDate.size(); j++) {
@@ -49,7 +50,9 @@ public class TenFlowHolderInitData {
                     tenFlowHolders.add(tenFlowHolder);
                 }
             }
-            tenFlowHolderMapper.batchInsert(tenFlowHolders);
+            if (tenFlowHolders.size()>0){
+                tenFlowHolderMapper.batchInsert(tenFlowHolders);
+            }
         });
     }
 

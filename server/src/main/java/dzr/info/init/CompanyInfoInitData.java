@@ -23,6 +23,7 @@ public class CompanyInfoInitData {
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
+            log.info(securityCode.toString());
             String urlPre = url.replace("$code", securityCode.getCodeWithExchange());
             String ret = httpClientService.doGet(urlPre).toLowerCase();
             JSONObject fxxg = JSON.parseObject(ret).getJSONArray("fxxg").getJSONObject(0);

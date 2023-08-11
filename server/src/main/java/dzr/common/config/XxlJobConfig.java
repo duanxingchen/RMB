@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
  * @date： 2022年12月07日 08:37
  * @version： 1.0
  */
-@Component
-@Configuration
+//@Component
+//@Configuration
 @Data
 @Slf4j
 public class XxlJobConfig {

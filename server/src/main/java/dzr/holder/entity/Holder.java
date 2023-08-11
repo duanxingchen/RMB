@@ -78,6 +78,11 @@ public class Holder implements Serializable {
     private Double sort16;
 
     /**
+     * 人均持股金额（万）
+     */
+    private Double avgAssets;
+
+    /**
      * 总市值
      */
     private Double market;

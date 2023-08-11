@@ -58,13 +58,13 @@ public class InitDataScheduledTask {
 
     private final CompanyInfoInitData companyInfoInitData;
 
-    @XxlJob("companyInfoInitData")
+    //@XxlJob("companyInfoInitData")
     public ReturnT<String> companyInfoInitData(String date){
         companyInfoInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
     }
 
-    @XxlJob("conceptStockInitData")
+    //@XxlJob("conceptStockInitData")
     public ReturnT<String> conceptStockInitData(String date){
         conceptStockInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -72,7 +72,7 @@ public class InitDataScheduledTask {
 
 
 
-    @XxlJob("securityCodeInitData")
+    //@XxlJob("securityCodeInitData")
     public ReturnT<String> securityCodeInitData(String date){
         securityCodeInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -80,7 +80,7 @@ public class InitDataScheduledTask {
 
 
 
-    @XxlJob("tenFlowHolderInitData")
+    //@XxlJob("tenFlowHolderInitData")
     public ReturnT<String> tenFlowHolderInitData(String date){
         tenFlowHolderInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -93,7 +93,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 0 23 L * ?")
-    @XxlJob("organizationDetailsHolderInitData")
+    //@XxlJob("organizationDetailsHolderInitData")
     public ReturnT<String> organizationDetailsHolderInitData(String date){
         organizationDetailsHolderInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -105,7 +105,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 0 1 * * ?")
-    @XxlJob("eventInitData")
+    //@XxlJob("eventInitData")
     public ReturnT<String> eventInitData(String date){
         eventInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -116,7 +116,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 0 1 * * ?")
-    @XxlJob("guBaInitData")
+    //@XxlJob("guBaInitData")
     public ReturnT<String> guBaInitData(String date){
         guBaInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -128,7 +128,7 @@ public class InitDataScheduledTask {
      */
     //@Scheduled(cron = "0 0 1 * * ?")
     //@Async
-    @XxlJob("holderNumInitData")
+    //@XxlJob("holderNumInitData")
     public ReturnT<String> holderNumInitData(String date) {
         log.info("---------股东人数任务--------");
         holderNumInitData.remountPullDataFromWeb();
@@ -140,7 +140,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 0/10 9-16 ? * MON-FRI")
-    @XxlJob("plateBlockInitData")
+    //@XxlJob("plateBlockInitData")
     public ReturnT<String> plateBlockInitData(String date){
         plateBlockInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -151,7 +151,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 1 12,15 ? * MON-FRI")
-    @XxlJob("plateStockInitData")
+    //@XxlJob("plateStockInitData")
     public ReturnT<String> plateStockInitData(String date){
         plateStockInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -162,7 +162,7 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 1 12,15 ? * MON-FRI")
-    @XxlJob("tranDetailInitData")
+    //@XxlJob("tranDetailInitData")
     public ReturnT<String> tranDetailInitData(String date){
         tranDetailInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
@@ -172,13 +172,13 @@ public class InitDataScheduledTask {
      */
     //@Async
     //@Scheduled(cron = "0 1 15 ? * MON-FRI")
-    @XxlJob("transactionInitData")
+    //@XxlJob("transactionInitData")
     public ReturnT<String> transactionInitData(String date){
         transactionInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;
     }
 
-    @XxlJob("sinaTranDetailInitData")
+    //@XxlJob("sinaTranDetailInitData")
     public ReturnT<String> sinaTranDetailInitData(String date){
         sinaTranDetailInitData.remountPullDataFromWeb();
         return ReturnT.SUCCESS;

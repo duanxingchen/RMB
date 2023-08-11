@@ -26,7 +26,7 @@ public class HolderNumInitData  {
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
-            log.info("拉取股东人数：{}",securityCode.getName());
+            log.info(securityCode.toString());
             String urlPre = url.replace("$code", securityCode.getCode());
             String ret = httpClientService.doGet(urlPre).toLowerCase();
             ArrayList<HolderNum> holderNums = new ArrayList<>();

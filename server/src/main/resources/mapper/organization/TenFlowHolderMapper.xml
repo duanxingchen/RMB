@@ -55,4 +55,11 @@
       #{code}
     </foreach>
   </select>
+
+  <select id="selectByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ten_flow_holder
+    where code = #{code}
+  </select>
 </mapper>

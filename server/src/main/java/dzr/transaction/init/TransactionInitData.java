@@ -37,8 +37,8 @@ public class TransactionInitData  {
      * 1 前复权
      * 0 不复权
      */
-    private static final String[] FQT = {"0","1"};
-    private static final String[] KLT = {"101","5","15","30","60"};
+    private static final String[] FQT = {"1"};
+    private static final String[] KLT = {"101"};
 
     private static final String url = "http://push2his.eastmoney.com/api/qt/stock/kline/get?fields1=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61&beg=$begin&end=20500101&ut=fa5fd1943c7b386f172d6893dbfba10b&rtntype=6&secid=$code&klt=$klt&fqt=$fqt";
 
@@ -91,7 +91,9 @@ public class TransactionInitData  {
                     }
                 }
             }
-            transactionMapper.batchInsert(transactions);
+            if (transactions.size() > 0){
+                transactionMapper.batchInsert(transactions);
+            }
         });
 
     }
