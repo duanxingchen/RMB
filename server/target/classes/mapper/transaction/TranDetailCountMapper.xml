@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.transaction.mapper.TranDetailCountMapper">
+  <resultMap id="BaseResultMap" type="dzr.transaction.entity.TranDetailCount">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="report_date" jdbcType="TIMESTAMP" property="reportDate" />
+    <result column="up_num" jdbcType="DOUBLE" property="upNum" />
+    <result column="down_num" jdbcType="DOUBLE" property="downNum" />
+    <result column="hand_up_sum" jdbcType="DOUBLE" property="handUpSum" />
+    <result column="hand_down_sum" jdbcType="DOUBLE" property="handDownSum" />
+    <result column="price_up_sum" jdbcType="DOUBLE" property="priceUpSum" />
+    <result column="price_down_sum" jdbcType="DOUBLE" property="priceDownSum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, name, report_date, up_num, down_num, hand_up_sum, hand_down_sum, price_up_sum,
+    price_down_sum
+  </sql>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into statistics.tran_detail_count
+    (code, name, report_date, up_num, down_num, hand_up_sum, hand_down_sum, price_up_sum,
+    price_down_sum)
+    values
+    <foreach collection="list" item="tran" separator=",">
+      (#{tran.code},#{tran.name},#{tran.reportDate},#{tran.upNum},#{tran.downNum},#{tran.handUpSum},#{tran.handDownSum},#{tran.priceUpSum}
+      ,#{tran.priceDownSum})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from statistics.tran_detail_count where code in
+    <foreach collection="list" item="holder" separator="," open="(" close=")" index="">
+      #{holder.code}
+    </foreach>
+  </delete>
+
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.tran_detail_count
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+</mapper>

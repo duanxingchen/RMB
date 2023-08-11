@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.info.mapper.EventMapper">
+  <resultMap id="BaseResultMap" type="dzr.info.entity.Event">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="event_type" jdbcType="VARCHAR" property="eventType" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="notice_date" jdbcType="TIMESTAMP" property="noticeDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, name, event_type, content, notice_date
+  </sql>
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into event
+    (code, name, event_type, content, notice_date)
+    values
+    <foreach collection="list" item="holder" separator=",">
+      (#{holder.code},#{holder.name},#{holder.eventType},#{holder.content},#{holder.noticeDate})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from event where code in
+    <foreach collection="list" item="holder" separator="," open="(" close=")" index="">
+      #{holder.code}
+    </foreach>
+  </delete>
+
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from event
+  </select>
+
+</mapper>

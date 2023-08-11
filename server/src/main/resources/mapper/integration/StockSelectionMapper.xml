@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.integration.StockSelectionMapper">
+  <resultMap id="BaseResultMap" type="dzr.integration.entity.StockSelection">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="main_force" jdbcType="DOUBLE" property="mainForce" />
+    <result column="price_increase" jdbcType="DOUBLE" property="priceIncrease" />
+    <result column="flow_market" jdbcType="DOUBLE" property="flowMarket" />
+    <result column="industry_advanced" jdbcType="VARCHAR" property="industryAdvanced" />
+    <result column="private_fund" jdbcType="VARCHAR" property="privateFund" />
+    <result column="industry_leader" jdbcType="VARCHAR" property="industryLeader" />
+    <result column="policy_block" jdbcType="VARCHAR" property="policyBlock" />
+    <result column="low_turnover_rate" jdbcType="VARCHAR" property="lowTurnoverRate" />
+    <result column="three_red" jdbcType="VARCHAR" property="threeRed" />
+    <result column="heat_lead_stock" jdbcType="VARCHAR" property="heatLeadStock" />
+    <result column="event" jdbcType="VARCHAR" property="event" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, name, main_force, price_increase, flow_market, industry_advanced, private_fund,
+    industry_leader, policy_block, low_turnover_rate, three_red, heat_lead_stock,event
+  </sql>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.stockSelection
+  </select>
+
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into statistics.stockSelection (code, name,
+    main_force, price_increase, flow_market,
+    industry_advanced, private_fund, industry_leader,
+    policy_block, low_turnover_rate, three_red,
+    heat_lead_stock,event)
+    values
+    <foreach collection="list" item="tmp" separator=",">
+      (#{tmp.code}, #{tmp.name},
+      #{tmp.mainForce}, #{tmp.priceIncrease}, #{tmp.flowMarket},
+      #{tmp.industryAdvanced}, #{tmp.privateFund}, #{tmp.industryLeader},
+      #{tmp.policyBlock}, #{tmp.lowTurnoverRate}, #{tmp.threeRed},
+      #{tmp.heatLeadStock},#{tmp.event})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from statistics.stockSelection where code in
+    <foreach collection="list" item="tmp" separator="," open="(" close=")" index="">
+      #{tmp.code}
+    </foreach>
+  </delete>
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.stockSelection
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+</mapper>

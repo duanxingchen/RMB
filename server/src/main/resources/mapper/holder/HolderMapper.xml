@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.holder.mapper.HolderMapper">
+  <resultMap id="BaseResultMap" type="dzr.holder.entity.Holder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="holder_name" jdbcType="VARCHAR" property="holderName" />
+    <result column="report_date" jdbcType="DATE" property="reportDate" />
+    <result column="price_ratio" jdbcType="DOUBLE" property="priceRatio" />
+    <result column="notice_price" jdbcType="DOUBLE" property="noticePrice" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="maker_vs_san_hu_ratio" jdbcType="DOUBLE" property="makerVsSanHuRatio" />
+    <result column="holder_num" jdbcType="INTEGER" property="holderNum" />
+    <result column="oder_num3" jdbcType="INTEGER" property="oderNum3" />
+    <result column="oder_num5" jdbcType="INTEGER" property="oderNum5" />
+    <result column="sort_1_2" jdbcType="DOUBLE" property="sort12" />
+    <result column="sort_1_3" jdbcType="DOUBLE" property="sort13" />
+    <result column="sort_1_4" jdbcType="DOUBLE" property="sort14" />
+    <result column="sort_1_5" jdbcType="DOUBLE" property="sort15" />
+    <result column="sort_1_6" jdbcType="DOUBLE" property="sort16" />
+    <result column="market" jdbcType="DOUBLE" property="market" />
+    <result column="flow_market" jdbcType="DOUBLE" property="flowMarket" />
+    <result column="ten_flow_holder_ratio" jdbcType="DOUBLE" property="tenFlowHolderRatio" />
+    <result column="makers_ratio" jdbcType="DOUBLE" property="makersRatio" />
+    <result column="makers_cost" jdbcType="DOUBLE" property="makersCost" />
+    <result column="san_hu_ratio" jdbcType="DOUBLE" property="sanHuRatio" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="dong_cai_industry" jdbcType="VARCHAR" property="dongCaiIndustry" />
+    <result column="industry_big" jdbcType="VARCHAR" property="industryBig" />
+    <result column="industry_middle" jdbcType="VARCHAR" property="industryMiddle" />
+    <result column="listing_date" jdbcType="TIMESTAMP" property="listingDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, name, holder_name,report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, flow_market, ten_flow_holder_ratio,
+    makers_ratio,makers_cost, san_hu_ratio, create_time, update_time, dong_cai_industry, industry_big,
+    industry_middle, listing_date
+  </sql>
+
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into statistics.holder
+    (code, name,holder_name, report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, flow_market, ten_flow_holder_ratio,
+    makers_ratio,makers_cost, san_hu_ratio, dong_cai_industry, industry_big,
+    industry_middle, listing_date)
+    values
+    <foreach collection="list" item="holder" separator=",">
+      (#{holder.code},#{holder.name},#{holder.holderName},#{holder.reportDate},#{holder.priceRatio},#{holder.noticePrice},#{holder.price},#{holder.makerVsSanHuRatio},
+      #{holder.holderNum},#{holder.oderNum3},#{holder.oderNum5},#{holder.sort12},#{holder.sort13},
+      #{holder.sort14},#{holder.sort15},#{holder.sort16},
+      #{holder.market},#{holder.flowMarket},#{holder.tenFlowHolderRatio},
+      #{holder.makersRatio},#{holder.makersCost},#{holder.sanHuRatio},#{holder.dongCaiIndustry},
+      #{holder.industryBig},#{holder.industryMiddle},#{holder.listingDate})
+    </foreach>
+    on duplicate key update update_time = now()
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from statistics.holder where code in
+        <foreach collection="list" item="holder" separator="," open="(" close=")" index="">
+          #{holder.code}
+        </foreach>
+  </delete>
+
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.holder
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.holder
+  </select>
+
+</mapper>

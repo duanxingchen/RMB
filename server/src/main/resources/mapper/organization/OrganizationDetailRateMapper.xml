@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.organization.mapper.OrganizationDetailRateMapper">
+  <resultMap id="BaseResultMap" type="dzr.organization.entity.OrganizationDetailRate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_holder_name" jdbcType="VARCHAR" property="parentHolderName" />
+    <result column="holder_name" jdbcType="VARCHAR" property="holderName" />
+    <result column="holder_code" jdbcType="VARCHAR" property="holderCode" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="holder_cap" jdbcType="DOUBLE" property="holderCap" />
+    <result column="holder_profit" jdbcType="DOUBLE" property="holderProfit" />
+    <result column="holder_profit_rate" jdbcType="INTEGER" property="holderProfitRate" />
+    <result column="day_num" jdbcType="INTEGER" property="dayNum" />
+    <result column="start_date" jdbcType="DATE" property="startDate" />
+    <result column="end_date" jdbcType="DATE" property="endDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, parent_holder_name, holder_name, holder_code, code, name, holder_cap, holder_profit,
+    holder_profit_rate, day_num,start_date,end_date
+  </sql>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into statistics.organization_detail_rate
+    (parent_holder_name, holder_name, holder_code, code, name, holder_cap, holder_profit,
+    holder_profit_rate, day_num,start_date,end_date)
+    values
+    <foreach collection="list" item="tmp" separator=",">
+      (#{tmp.parentHolderName},#{tmp.holderName},#{tmp.holderCode},#{tmp.code},#{tmp.name},#{tmp.holderCap},
+      #{tmp.holderProfit},#{tmp.holderProfitRate},#{tmp.dayNum},#{tmp.startDate},#{tmp.endDate})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from statistics.organization_detail_rate where CONCAT(holder_code,name) in
+    <foreach collection="list" item="tmp" separator="," open="(" close=")" index="">
+      #{tmp.holderCode}#{tmp.name}
+    </foreach>
+  </delete>
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.organization_detail_rate
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+</mapper>

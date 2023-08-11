@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.transaction.mapper.TransactionMapper">
+  <resultMap id="BaseResultMap" type="dzr.transaction.entity.Transaction">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="report_date" jdbcType="TIMESTAMP" property="reportDate" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="tclose" jdbcType="DOUBLE" property="tclose" />
+    <result column="high" jdbcType="DOUBLE" property="high" />
+    <result column="low" jdbcType="DOUBLE" property="low" />
+    <result column="topen" jdbcType="DOUBLE" property="topen" />
+    <result column="energy" jdbcType="DOUBLE" property="energy" />
+    <result column="avg_energy" jdbcType="DOUBLE" property="avgEnergy" />
+    <result column="nor_tclose" jdbcType="DOUBLE" property="norTclose" />
+    <result column="amplitude" jdbcType="DOUBLE" property="amplitude" />
+    <result column="chg" jdbcType="DOUBLE" property="chg" />
+    <result column="pchg" jdbcType="DOUBLE" property="pchg" />
+    <result column="turnover" jdbcType="DOUBLE" property="turnover" />
+    <result column="voturnover" jdbcType="DOUBLE" property="voturnover" />
+    <result column="vaturnover" jdbcType="DOUBLE" property="vaturnover" />
+    <result column="price_section" jdbcType="DOUBLE" property="priceSection" />
+    <result column="energy_do" jdbcType="DOUBLE" property="energyDo" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
+    <result column="reinstatement" jdbcType="VARCHAR" property="reinstatement" />
+    <result column="section" jdbcType="DOUBLE" property="section" />
+    <result column="plate_count" jdbcType="INTEGER" property="plateCount" />
+    <result column="plate_up_count" jdbcType="INTEGER" property="plateUpCount" />
+    <result column="t3" jdbcType="DOUBLE" property="t3" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, report_date, code, name,tclose, high, low, topen, energy,avg_energy,nor_tclose,amplitude, chg, pchg, turnover,
+    voturnover, vaturnover, price_section, energy_do, data_type,reinstatement,section,plate_count,plate_up_count,t3
+  </sql>
+
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into transaction (code,name,report_date,  tclose, high, low, topen, energy,avg_energy,nor_tclose,amplitude, chg, pchg, turnover,
+    voturnover, vaturnover, price_section, energy_do, data_type,reinstatement,section,plate_count,plate_up_count,t3
+    )
+    values
+    <foreach collection="list" item="tmp" separator=",">
+      (#{tmp.code},#{tmp.name},#{tmp.reportDate},#{tmp.tclose},#{tmp.high},#{tmp.low},
+      #{tmp.topen},#{tmp.energy}, #{tmp.avgEnergy}, #{tmp.norTclose},  #{tmp.amplitude}, #{tmp.chg},
+      #{tmp.pchg},#{tmp.turnover},#{tmp.voturnover},#{tmp.vaturnover},#{tmp.priceSection}
+      ,#{tmp.energyDo},#{tmp.dataType},#{tmp.reinstatement},#{tmp.section},#{tmp.plateCount},#{tmp.plateUpCount},#{tmp.t3})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from transaction where id in
+    <foreach collection="list" item="tmp" separator="," open="(" close=")" index="">
+      #{tmp.id}
+    </foreach>
+  </delete>
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+
+  <select id="selectNewestByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where code = #{code}
+    order by report_date desc  limit 1
+  </select>
+
+
+  <select id="selectReinstatementByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where code = #{code} and reinstatement = '1' and data_type = '101'
+  </select>
+
+  <select id="selectNotReinstatementByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where code = #{code} and reinstatement = '0' and data_type = '101'
+  </select>
+
+  <select id="selectBeforeAllByReportDate"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where report_date > #{beforeDate} and reinstatement = '1' and data_type = '101'
+  </select>
+
+    <select id="selectReinstatementDataTypeByReportDates"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where (report_date between #{startDate} and #{endDate} ) and reinstatement = '1' and data_type = '101'
+  </select>
+
+  <select id="selectReinstatementByCodeAndReportDates"   resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where (report_date between #{startDate} and #{endDate} ) and reinstatement = '1' and data_type = '101' and
+    code = #{code}
+  </select>
+
+</mapper>

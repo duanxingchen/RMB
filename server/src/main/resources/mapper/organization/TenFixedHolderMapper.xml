@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.organization.mapper.TenFixedHolderMapper">
+  <resultMap id="BaseResultMap" type="dzr.organization.entity.TenFixedHolder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="secucode" jdbcType="VARCHAR" property="secucode" />
+    <result column="hold_num_change" jdbcType="VARCHAR" property="holdNumChange" />
+    <result column="shares_type" jdbcType="VARCHAR" property="sharesType" />
+    <result column="holder_rank" jdbcType="VARCHAR" property="holderRank" />
+    <result column="holder_type" jdbcType="VARCHAR" property="holderType" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="holder_name" jdbcType="VARCHAR" property="holderName" />
+    <result column="security_code" jdbcType="VARCHAR" property="securityCode" />
+    <result column="change_ratio" jdbcType="VARCHAR" property="changeRatio" />
+    <result column="hold_num" jdbcType="VARCHAR" property="holdNum" />
+    <result column="hold_num_ratio" jdbcType="VARCHAR" property="holdNumRatio" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, secucode, hold_num_change, shares_type, holder_rank, holder_type, end_date,
+    holder_name, security_code, change_ratio, hold_num, hold_num_ratio, create_time,
+    update_time
+  </sql>
+
+  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ten_fixed_holder
+    where code in
+    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>
+  </select>
+</mapper>
