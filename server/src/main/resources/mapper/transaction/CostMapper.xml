@@ -5,58 +5,38 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="days1_cost" jdbcType="DOUBLE" property="days1Cost" />
-    <result column="days3_cost" jdbcType="DOUBLE" property="days3Cost" />
-    <result column="days5_cost" jdbcType="DOUBLE" property="days5Cost" />
-    <result column="days10_cost" jdbcType="DOUBLE" property="days10Cost" />
-    <result column="days20_cost" jdbcType="DOUBLE" property="days20Cost" />
-    <result column="days30_cost" jdbcType="DOUBLE" property="days30Cost" />
-    <result column="days60_cost" jdbcType="DOUBLE" property="days60Cost" />
+    <result column="dong_cai_industry" jdbcType="VARCHAR" property="dongCaiIndustry" />
+    <result column="days1_zf_rate" jdbcType="DOUBLE" property="days1ZfRate" />
+    <result column="days3_zf_rate" jdbcType="DOUBLE" property="days3ZfRate" />
+    <result column="days5_zf_rate" jdbcType="DOUBLE" property="days5ZfRate" />
     <result column="days1_hands_rate" jdbcType="DOUBLE" property="days1HandsRate" />
     <result column="days3_hands_rate" jdbcType="DOUBLE" property="days3HandsRate" />
     <result column="days5_hands_rate" jdbcType="DOUBLE" property="days5HandsRate" />
-    <result column="days10_hands_rate" jdbcType="DOUBLE" property="days10HandsRate" />
-    <result column="days20_hands_rate" jdbcType="DOUBLE" property="days20HandsRate" />
-    <result column="days30_hands_rate" jdbcType="DOUBLE" property="days30HandsRate" />
-    <result column="days60_hands_rate" jdbcType="DOUBLE" property="days60HandsRate" />
     <result column="days1_price_rate" jdbcType="DOUBLE" property="days1PriceRate" />
     <result column="days3_price_rate" jdbcType="DOUBLE" property="days3PriceRate" />
     <result column="days5_price_rate" jdbcType="DOUBLE" property="days5PriceRate" />
     <result column="days10_price_rate" jdbcType="DOUBLE" property="days10PriceRate" />
-    <result column="days20_price_rate" jdbcType="DOUBLE" property="days20PriceRate" />
     <result column="days30_price_rate" jdbcType="DOUBLE" property="days30PriceRate" />
-    <result column="days60_price_rate" jdbcType="DOUBLE" property="days60PriceRate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name,days1_cost, days3_cost, days5_cost, days10_cost, days20_cost, days30_cost, days60_cost,
-    days1_hands_rate,days3_hands_rate, days5_hands_rate, days10_hands_rate, days20_hands_rate, days30_hands_rate,
-    days60_hands_rate, days1_price_rate,days3_price_rate, days5_price_rate, days10_price_rate, days20_price_rate,
-    days30_price_rate, days60_price_rate
+    id, code, name,dong_cai_industry,days1_zf_rate, days3_zf_rate, days5_zf_rate,
+    days1_hands_rate,days3_hands_rate, days5_hands_rate,
+     days1_price_rate,days3_price_rate, days5_price_rate, days10_price_rate, days30_price_rate
   </sql>
 
-  <insert id="batchInsert" parameterType="java.util.List">
+  <insert id="insert" parameterType="dzr.transaction.entity.Cost">
     insert IGNORE into statistics.cost
-    (code, name,days1_cost, days3_cost, days5_cost, days10_cost, days20_cost, days30_cost, days60_cost,
-    days1_hands_rate,days3_hands_rate, days5_hands_rate, days10_hands_rate, days20_hands_rate, days30_hands_rate,
-    days60_hands_rate, days1_price_rate,days3_price_rate, days5_price_rate, days10_price_rate, days20_price_rate,
-    days30_price_rate, days60_price_rate)
+    (code, name,dong_cai_industry,days1_zf_rate, days3_zf_rate, days5_zf_rate,
+    days1_hands_rate,days3_hands_rate, days5_hands_rate,
+    days1_price_rate,days3_price_rate, days5_price_rate, days10_price_rate, days30_price_rate)
     values
-    <foreach collection="list" item="tmp" separator=",">
-      (#{tmp.code},#{tmp.name},#{tmp.days1Cost},#{tmp.days3Cost},#{tmp.days5Cost},#{tmp.days10Cost},#{tmp.days20Cost},
-      #{tmp.days30Cost},#{tmp.days60Cost},#{tmp.days1HandsRate},#{tmp.days3HandsRate},
-      #{tmp.days5HandsRate},#{tmp.days10HandsRate},#{tmp.days20HandsRate},
-      #{tmp.days30HandsRate},#{tmp.days60HandsRate},#{tmp.days1PriceRate},#{tmp.days3PriceRate},
-      #{tmp.days5PriceRate},#{tmp.days10PriceRate},#{tmp.days20PriceRate},#{tmp.days30PriceRate},
-      #{tmp.days60PriceRate})
-    </foreach>
-
+      (#{code},#{name},#{dongCaiIndustry},#{days1ZfRate},#{days3ZfRate},#{days5ZfRate},
+       #{days1HandsRate},#{days3HandsRate}, #{days5HandsRate},
+       #{days1PriceRate},#{days3PriceRate},#{days5PriceRate},#{days10PriceRate},#{days30PriceRate})
   </insert>
 
-  <delete id="batchDelete" parameterType="java.util.List">
-    delete from statistics.cost where code in
-    <foreach collection="list" item="tmp" separator="," open="(" close=")" index="">
-      #{tmp.code}
-    </foreach>
+  <delete id="delete" >
+    delete from statistics.cost where code = #{code}
   </delete>
 
   <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">

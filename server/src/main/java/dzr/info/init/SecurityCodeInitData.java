@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class SecurityCodeInitData {
     private final SecurityCodeMapper securityCodeMapper;
     private final HttpClientService httpClientService;
-    private final static String url = "http://33.push2.eastmoney.com/api/qt/clist/get?po=1&np=1&fltt=2&invt=2&pn=1&pz=8000&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048&fields=f12,f14";
+    private final static String url = "http://33.push2.eastmoney.com/api/qt/clist/get?po=1&np=1&fltt=2&invt=2&pn=1&pz=8000&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048&fields=f2,f12,f14";
 
 
     public void remountPullDataFromWeb() {
@@ -35,10 +35,12 @@ public class SecurityCodeInitData {
 
         for (int i = 0; i < data.size(); i++) {
             JSONObject info = data.getJSONObject(i);
-            SecurityCode securityCode = new SecurityCode();
-            securityCode.setCode(info.getString("f12"));
-            securityCode.setName(info.getString("f14"));
-            securityCodes.add(securityCode);
+            if (!info.getString("f2").equals("-")){
+                SecurityCode securityCode = new SecurityCode();
+                securityCode.setCode(info.getString("f12"));
+                securityCode.setName(info.getString("f14"));
+                securityCodes.add(securityCode);
+            }
         }
         securityCodeMapper.batchInsert(securityCodes);
     }

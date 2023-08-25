@@ -9,19 +9,12 @@ public class Cost {
     private String code;
 
     private String name;
-    private Double days1Cost;
+    private String dongCaiIndustry;
 
-    private Double days3Cost;
+    private Double days1ZfRate;
+    private Double days3ZfRate;
+    private Double days5ZfRate;
 
-    private Double days5Cost;
-
-    private Double days10Cost;
-
-    private Double days20Cost;
-
-    private Double days30Cost;
-
-    private Double days60Cost;
     private Double days1HandsRate;
     private Double days3HandsRate;
 

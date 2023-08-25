@@ -29,7 +29,7 @@ public class TranDetailInitData  {
     private final SecurityCodeMapper securityCodeMapper;
     private final HttpClientService httpClientService;
     private final TranDetailMapper tranDetailMapper;
-    private final TransactionMapper transactionMapper;
+
 
     private static String url = "https://stock.gtimg.cn/data/index.php?appn=detail&action=data&c=$code&p=$page";
 
@@ -38,7 +38,7 @@ public class TranDetailInitData  {
             ArrayList<TranDetail> tranDetails = new ArrayList<>();
 
             Date nowDate = DateUtils.getNowShortDate();
-            String page = countPage(securityCode.getCode(),nowDate);
+            String page = "0";
             log.info("thread ： {}  name : {}  : page = {}",
                     Thread.currentThread().getName(), securityCode.getName(),page);
             while (true){
@@ -60,34 +60,15 @@ public class TranDetailInitData  {
                     tranDetail.setChangePrice(Double.parseDouble(splitOne[3]));
                     tranDetail.setChangedHands(Long.parseLong(splitOne[4]));
                     tranDetail.setChangedPrice(Double.parseDouble(splitOne[5]));
-                    tranDetail.setNature(splitOne[6]);
+                    if (splitOne[6].equals("B")){
+                        tranDetail.setNature("M");
+                    }else {
+                        tranDetail.setNature(splitOne[6]);
+                    }
                     tranDetails.add(tranDetail);
                 });
             }
             tranDetailMapper.batchInsert(tranDetails);
         });
     }
-
-
-
-    /**
-     * 查询当天数据数量，计算page位置，每一条消息包含70个交易明细，page位置= 总数量/70
-     * @param code
-     * @param reportDate
-     * @return
-     * @throws SQLException
-     */
-    private String countPage(String code, Date reportDate){
-        int count = countByCodeAndReportDate(code,reportDate);
-        if (count > 70){
-            return String.valueOf(count/70);
-        }
-        return "0";
-    }
-
-
-    private int countByCodeAndReportDate(String code, Date reportDate) {
-        return transactionMapper.countByCodeAndReportDate(code,reportDate);
-    }
-
 }

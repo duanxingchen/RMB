@@ -2,6 +2,7 @@ package dzr.transaction.init;
 
 import dzr.common.utils.DateUtils;
 import dzr.common.utils.HttpClientService;
+import dzr.info.entity.SecurityCode;
 import dzr.info.mapper.SecurityCodeMapper;
 import dzr.transaction.entity.TranDetail;
 import dzr.transaction.entity.Transaction;
@@ -35,81 +36,85 @@ public class SinaTranDetailInitData {
 
     private static String url = "http://market.finance.sina.com.cn/transHis.php?symbol=$code&date=$reportDate&page=$page";
 
-    private static int DAYS = 10;
+    private static int DAYS = 60;
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
-            ArrayList<TranDetail> tranDetails = new ArrayList<>();
-            List<Date> inReportDates = tranDetailMapper.groupByCodeAndReportDate(securityCode.getCode());
-            HashMap<Long, Date> dateHashMap = new HashMap<Long, Date>();
-            inReportDates.forEach(inReportDate->dateHashMap.put(inReportDate.getTime(),inReportDate));
+            remountByCode(securityCode);
+        });
+    }
 
-            List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
-            transactions = transactions.stream()
-                    .filter(transaction ->
-                            dateHashMap.get(transaction.getReportDate().getTime()) == null
-                    )
-                    .sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
+    public void remountByCode(SecurityCode securityCode) {
+        ArrayList<TranDetail> tranDetails = new ArrayList<>();
+        List<Date> inReportDates = tranDetailMapper.groupByCodeAndReportDate(securityCode.getCode());
+        HashMap<Long, Date> dateHashMap = new HashMap<Long, Date>();
+        inReportDates.forEach(inReportDate -> dateHashMap.put(inReportDate.getTime(), inReportDate));
 
-            for (int i = 0; i < DAYS && i< transactions.size(); i++) {
-                Date reportDate = transactions.get(i).getReportDate();
-                for (int m = 0; m < 100; m++) {
-                    String urlPre = url.replace("$code", securityCode.getCodeWithExchange())
-                            .replace("$reportDate", DateUtils.dateToStr(reportDate,"yyyy-MM-dd"))
-                            .replace("$page",String.valueOf(m));
-                    log.info("url : {}",urlPre);
+        List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
+        transactions = transactions.stream()
+                .sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
 
-                    String ret =httpClientService.doGet(urlPre);
+        for (int i = 0; i < DAYS && i < transactions.size(); i++) {
+            Date reportDate = transactions.get(i).getReportDate();
+            if( dateHashMap.get(reportDate.getTime()) != null){
+                continue;
+            }
 
-                    Document document = Jsoup.parse(ret);
-                    Elements tbody = document.getElementsByTag("tbody");
-                    if (tbody.size() == 1){
-                        Element element = tbody.get(0);
-                        Elements tr = element.getElementsByTag("tr");
-                        if (tr.size() == 0){
-                            log.info("table表数据为空");
-                            break;
-                        }
+            for (int m = 0; m < 100; m++) {
+                String urlPre = url.replace("$code", securityCode.getCodeWithExchange())
+                        .replace("$reportDate", DateUtils.dateToStr(reportDate, "yyyy-MM-dd"))
+                        .replace("$page", String.valueOf(m));
+                log.info("url : {}", urlPre);
 
-                        for (int j = 0; j < tr.size(); j++) {
-                            Element row = tr.get(j);
-                            Elements children = row.children();
-                            TranDetail tranDetail = new TranDetail();
-
-                            tranDetail.setCode(securityCode.getCode());
-                            tranDetail.setReportDate(reportDate);
-                            tranDetail.setTranTime(DateUtils.strToDate(children.get(0).text(),"HH:mm:ss"));
-                            tranDetail.setPrice(Double.parseDouble(children.get(1).text()));
-                            tranDetail.setChangePrice(Double.parseDouble(children.get(2).text().replace("--","0")));
-                            tranDetail.setChangedHands(Long.parseLong(children.get(3).text().replace(",","")));
-                            tranDetail.setChangedPrice(Double.parseDouble(children.get(4).text().replace(",","")));
-                            int hashCode = children.get(5).text().hashCode();
-                            if (hashCode == 601827){
-                                tranDetail.setNature("B");
-                            }else if(hashCode == 6020249){
-                                tranDetail.setNature("S");
-                            }else {
-                                tranDetail.setNature("M");
-                            }
-                            tranDetails.add(tranDetail);
-                        }
+                String ret = httpClientService.doGet(urlPre);
+                Document document = Jsoup.parse(ret);
+                Elements tbody = document.getElementsByTag("tbody");
+                if (tbody.size() == 1) {
+                    Element element = tbody.get(0);
+                    Elements tr = element.getElementsByTag("tr");
+                    if (tr.size() == 0) {
+                        log.info("table表数据为空");
+                        break;
                     }
 
-                    try {
-                        if (tbody.size() == 0 ){
-                            Thread.sleep(30000);
-                            log.info("输入的代码有误或没有交易数据");
-                            break;
+                    for (int j = 0; j < tr.size(); j++) {
+                        Element row = tr.get(j);
+                        Elements children = row.children();
+                        TranDetail tranDetail = new TranDetail();
+
+                        tranDetail.setCode(securityCode.getCode());
+                        tranDetail.setReportDate(reportDate);
+                        tranDetail.setTranTime(DateUtils.strToDate(children.get(0).text(), "HH:mm:ss"));
+                        tranDetail.setPrice(Double.parseDouble(children.get(1).text()));
+                        tranDetail.setChangePrice(Double.parseDouble(children.get(2).text().replace("--", "0")));
+                        tranDetail.setChangedHands(Long.parseLong(children.get(3).text().replace(",", "")));
+                        tranDetail.setChangedPrice(Double.parseDouble(children.get(4).text().replace(",", "")));
+                        int hashCode = children.get(5).text().hashCode();
+                        if (hashCode == 601827) {
+                            tranDetail.setNature("B");
+                        } else if (hashCode == 6020249) {
+                            tranDetail.setNature("S");
+                        } else {
+                            tranDetail.setNature("M");
                         }
-                        Thread.sleep(3000);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        tranDetails.add(tranDetail);
                     }
+                }
+
+                try {
+                    if (tbody.size() == 0) {
+                        log.info("输入的代码有误或没有交易数据");
+                        Thread.sleep(2000);
+                        break;
+                    }
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 tranDetailMapper.batchInsert(tranDetails);
                 tranDetails.clear();
             }
-        });
-    }
 
+        }
+    }
 }

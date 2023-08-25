@@ -45,55 +45,60 @@ public class TransactionInitData  {
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
-            log.info(securityCode.toString());
-            ArrayList<Transaction> transactions =new ArrayList<>();
-            HashMap<Date,Transaction> tranDayMap = new HashMap<>();
-            Date reportDate = getNewestReportDate(securityCode);
-            for (int k = 0; k < KLT.length; k++) {
-                for (int j = 0; j < FQT.length; j++) {
-                    String urlPre = url.replace("$code", securityCode.getCodeWithNumber()).replace("$fqt", FQT[j])
-                            .replace("$klt", KLT[k]).replace("$begin", DateUtils.dateToStr(reportDate,"yyyyMMdd"));
-                    String ret = httpClientService.doGet(urlPre);
-                    if (ret.length() > 100) {
+            try{
+                log.info(securityCode.toString());
+                ArrayList<Transaction> transactions =new ArrayList<>();
+                HashMap<Date,Transaction> tranDayMap = new HashMap<>();
+                Date reportDate = getNewestReportDate(securityCode);
+                for (int k = 0; k < KLT.length; k++) {
+                    for (int j = 0; j < FQT.length; j++) {
+                        String urlPre = url.replace("$code", securityCode.getCodeWithNumber()).replace("$fqt", FQT[j])
+                                .replace("$klt", KLT[k]).replace("$begin", DateUtils.dateToStr(reportDate,"yyyyMMdd"));
+                        String ret = httpClientService.doGet(urlPre);
+                        if (ret.length() > 100) {
 
-                        JSONArray data = JSON.parseObject(ret).getJSONObject("data").getJSONArray("klines");
+                            JSONArray data = JSON.parseObject(ret).getJSONObject("data").getJSONArray("klines");
 
-                        for (int i = 0; i < data.size(); i++) {
-                            try {
-                                String[] one = data.getString(i).split(",");
-                                String date = one[0].length() > 10 ? one[0] + ":00" : one[0] + " 00:00:00";
-                                Transaction transaction = new Transaction();
-                                transaction.setCode(securityCode.getCode());
-                                transaction.setName(securityCode.getName());
-                                transaction.setReportDate(DateUtils.strToDate(date));
-                                transaction.setTopen(Double.valueOf(one[1]));
-                                transaction.setTclose(Double.valueOf(one[2]));
-                                transaction.setHigh(Double.valueOf(one[3]));
-                                transaction.setLow(Double.valueOf(one[4]));
+                            for (int i = 0; i < data.size(); i++) {
+                                try {
+                                    String[] one = data.getString(i).split(",");
+                                    String date = one[0].length() > 10 ? one[0] + ":00" : one[0] + " 00:00:00";
+                                    Transaction transaction = new Transaction();
+                                    transaction.setCode(securityCode.getCode());
+                                    transaction.setName(securityCode.getName());
+                                    transaction.setReportDate(DateUtils.strToDate(date));
+                                    transaction.setTopen(Double.valueOf(one[1]));
+                                    transaction.setTclose(Double.valueOf(one[2]));
+                                    transaction.setHigh(Double.valueOf(one[3]));
+                                    transaction.setLow(Double.valueOf(one[4]));
 
-                                transaction.setVoturnover(Double.valueOf(one[5]));
-                                transaction.setVaturnover(Double.valueOf(one[6]));
+                                    transaction.setVoturnover(Double.valueOf(one[5]));
+                                    transaction.setVaturnover(Double.valueOf(one[6]));
 
-                                transaction.setAmplitude(Double.valueOf(one[7]));
-                                transaction.setPchg(Double.valueOf(one[8]));
-                                transaction.setChg(Double.valueOf(one[9]));
-                                transaction.setTurnover(Double.valueOf(one[10]));
-                                transaction.setEnergy(MathUtils.doubleRetain2Bit(transaction.getAmplitude() / transaction.getTurnover()));
-                                transaction.setReinstatement(FQT[j]);
-                                transaction.setDataType(KLT[k]);
-                                tranDayMap.put(transaction.getReportDate(), transaction);
-                                transactions.add(transaction);
-                            } catch (Exception e) {
-                                System.out.println(ret);
-                                e.printStackTrace();
+                                    transaction.setAmplitude(Double.valueOf(one[7]));
+                                    transaction.setPchg(Double.valueOf(one[8]));
+                                    transaction.setChg(Double.valueOf(one[9]));
+                                    transaction.setTurnover(Double.valueOf(one[10]));
+                                    transaction.setEnergy(MathUtils.doubleRetain2Bit(transaction.getAmplitude() / transaction.getTurnover()));
+                                    transaction.setReinstatement(FQT[j]);
+                                    transaction.setDataType(KLT[k]);
+                                    tranDayMap.put(transaction.getReportDate(), transaction);
+                                    transactions.add(transaction);
+                                } catch (Exception e) {
+                                    System.out.println(ret);
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
                 }
+                if (transactions.size() > 0){
+                    transactionMapper.batchInsert(transactions);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            if (transactions.size() > 0){
-                transactionMapper.batchInsert(transactions);
-            }
+
         });
 
     }

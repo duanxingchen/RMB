@@ -49,8 +49,14 @@ public class HolderServiceImpl implements HolderService {
             List<HolderNum> holderNums =  holderNumMapper.selectByCode(securityCode.getCode());
             List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
 
-            HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders);
-            holderDto.doit();
+            if (holderNums.size() > 0 && transactions.size() >0){
+                log.info(securityCode.toString());
+                HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders);
+                holderDto.doit();
+            }else {
+                log.error("股东人数错误: {}",securityCode.toString());
+            }
+
         });
     }
 
@@ -104,11 +110,12 @@ public class HolderServiceImpl implements HolderService {
                  */
                 calculatePrice();
 
+                holderMapper.delete(holder);
+                holderMapper.insert(holder);
             }catch (Exception e){
                 e.printStackTrace();
             }
-            holderMapper.delete(holder);
-            holderMapper.insert(holder);
+
         }
 
         private void calculatePrice() {

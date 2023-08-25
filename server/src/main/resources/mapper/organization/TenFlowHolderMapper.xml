@@ -62,4 +62,15 @@
     from ten_flow_holder
     where code = #{code}
   </select>
+
+
+  <select id="groupByCodeAndReportDate" resultType="java.sql.Date" >
+    select
+      report_date
+    from ten_flow_holder
+    where code = #{code}
+    group by report_date
+  </select>
+
+
 </mapper>

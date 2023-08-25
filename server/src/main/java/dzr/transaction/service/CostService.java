@@ -10,5 +10,5 @@ import dzr.info.entity.SecurityCode;
  * @Description:
  */
 public interface CostService {
-    void calculate(SecurityCode securityCode);
+    void calculate();
 }

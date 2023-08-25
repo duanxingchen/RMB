@@ -2,10 +2,17 @@ package dzr;
 
 import dzr.holder.init.HolderNumInitData;
 import dzr.holder.init.TenFlowHolderInitData;
+import dzr.holder.mapper.HolderMapper;
 import dzr.holder.service.impl.HolderServiceImpl;
+import dzr.info.entity.SecurityCode;
 import dzr.info.init.CompanyInfoInitData;
 import dzr.info.init.SecurityCodeInitData;
+import dzr.info.mapper.SecurityCodeMapper;
+import dzr.transaction.init.SinaTranDetailInitData;
+import dzr.transaction.init.TranDetailInitData;
 import dzr.transaction.init.TransactionInitData;
+import dzr.transaction.service.impl.CostServiceImpl;
+import dzr.transaction.service.impl.JianCangServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +46,24 @@ public class HolderTest {
     @Autowired
     HolderServiceImpl holderService;
 
+    @Autowired
+    CostServiceImpl costService;
+
+    @Autowired
+    SinaTranDetailInitData sinaTranDetailInitData;
+
+    @Autowired
+    JianCangServiceImpl jianCangService;
+
+    @Autowired
+    HolderMapper holderMapper;
+
+    @Autowired
+    SecurityCodeMapper securityCodeMapper;
+
+    @Autowired
+    TranDetailInitData tranDetailInitData;
+
     @Test
     public void securityCodeInitData(){
         securityCodeInitData.remountPullDataFromWeb();
@@ -55,6 +80,11 @@ public class HolderTest {
     }
 
     @Test
+    public void costService(){
+        costService.calculate();
+    }
+
+    @Test
     public void transactionInitData(){
         transactionInitData.remountPullDataFromWeb();
     }
@@ -66,6 +96,47 @@ public class HolderTest {
 
     @Test
     public void holderService(){
+        //holderNumInitData();
+        transactionInitData();
         holderService.calculate();
+        costService.calculate();
+    }
+
+    /**
+     * 新浪历史明细
+     */
+    @Test
+    public void sinaTranDetailInitData(){
+        holderMapper.selectAll().stream().filter(holder -> holder.getIndustryMiddle()!= null && holder.getIndustryMiddle().equals("证券"))
+                .forEach(holder -> {
+            SecurityCode securityCode = new SecurityCode();
+            securityCode.setCode(holder.getCode());
+            sinaTranDetailInitData.remountByCode(securityCode);
+        });
+
+    }
+
+    /**
+     * 腾讯当日明细
+     */
+    @Test
+    public void tranDetailInitData(){
+        tranDetailInitData.remountPullDataFromWeb();
+    }
+
+    /**
+     * 建仓统计
+     */
+    @Test
+    public void jianCangService(){
+       /* SecurityCode securityCode = new SecurityCode();
+        securityCode.setCode("000712");
+        securityCode.setName("锦龙");*/
+        //jianCangService.calculate(securityCode);
+        securityCodeMapper.selectAll().forEach(securityCode -> {
+            jianCangService.calculate(securityCode);
+        });
+
     }
 }
+

@@ -26,14 +26,11 @@
   </insert>
 
 
-  <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+  <select id="selectByCode"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tran_detail
-    where code in
-    <foreach collection="list" item="code" separator="," open="(" close=")" index="">
-      #{code}
-    </foreach>
+    where code = #{code}
   </select>
 
   <select id="countByCodeAndReportDate"  resultType="java.lang.Integer">

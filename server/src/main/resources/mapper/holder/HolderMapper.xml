@@ -73,6 +73,13 @@
     </foreach>
   </select>
 
+  <select id="selectOneByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.holder
+    where code = #{code}
+  </select>
+
   <select id="selectAll"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
