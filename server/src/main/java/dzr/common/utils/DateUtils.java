@@ -38,6 +38,10 @@ public class DateUtils {
         return dateToDate(currentTime,"yyyy-MM-dd HH:mm:ss");
     }
 
+    public static int getHours(){
+        return getNowDate().getHours();
+    }
+
     public static Date getNowDate(long timeStamp) {
         Date currentTime = new Date(timeStamp);
         return dateToDate(currentTime,"yyyy-MM-dd HH:mm:ss");

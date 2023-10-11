@@ -6,6 +6,8 @@ import lombok.Data;
 public class JianCang {
     private String code;
     private String name;
+    private Double day1InMemory;
+    private Double day2InMemory;
     private Double day3InMemory;
     private Double day3InTimes;
     private Double day5InMemory;

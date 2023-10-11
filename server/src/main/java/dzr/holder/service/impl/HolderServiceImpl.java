@@ -6,6 +6,7 @@ import dzr.common.utils.MathUtils;
 import dzr.common.utils.ReportDateUtils;
 import dzr.holder.entity.Holder;
 import dzr.holder.entity.HolderNum;
+import dzr.holder.entity.OderHolder;
 import dzr.holder.mapper.HolderMapper;
 import dzr.holder.mapper.HolderNumMapper;
 import dzr.holder.service.HolderService;
@@ -82,6 +83,11 @@ public class HolderServiceImpl implements HolderService {
                 holderNums = holderNums.stream().sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
 
                 /**
+                 * 人数减少期数和天数
+                 */
+                countAndDays();
+
+                /**
                  * 人数对比
                  */
                 calculateRate();
@@ -116,6 +122,22 @@ public class HolderServiceImpl implements HolderService {
                 e.printStackTrace();
             }
 
+        }
+
+        private void countAndDays() {
+            int count = 0;
+            for (int i = 0; i < holderNums.size() - 1; i++) {
+                if (holderNums.get(i).getHolderNum() < holderNums.get(i+1).getHolderNum()){
+                    count ++ ;
+                }else {
+                    break;
+                }
+            }
+
+            holder.setCount(count);
+            if (count>0){
+               holder.setDays(DateUtils.differentDays(holderNums.get(0).getReportDate(),holderNums.get(count).getReportDate()));
+            }
         }
 
         private void calculatePrice() {

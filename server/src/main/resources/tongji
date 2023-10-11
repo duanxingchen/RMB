@@ -1,0 +1,71 @@
+开盘价统计最高价：
+SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 2 AND 3) AND low > 0
+3.6810986782
+
+SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 3 AND 4) AND low > 0
+4.7689666460
+
+SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 4 AND 5) AND low > 0
+5.7686765737
+
+SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 5 AND 6) AND low > 0
+6.6321840619
+
+SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 6 AND 7) AND low > 0
+7.9918172337
+
+
+
+最高统计，收盘价：
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 2 and 3 AND low > 0
+0.255263
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 3 and 4 AND low > 0
+1.044465
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 4 and 5 AND low > 0
+1.823111
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 5 and 6 AND low > 0
+2.576598
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 6 and 7 AND low > 0
+3.330108
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 7 and 8 AND low > 0
+4.101671
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 8 and 9  AND low > 0
+4.868183
+
+SELECT AVG(pchg) FROM `transaction`  WHERE (((high-topen)/topen*100) BETWEEN 9 and 10 ) AND low > 0
+5.832384
+
+
+SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) > 10
+12.210981
+
+最低统计，收盘价：
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -10 and -9)
+-5.211200
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -9 and -8)
+-4.630701
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -8 and -7)
+-4.061748
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -7 and -6)
+-3.408057
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -6 and -5)
+-2.725675
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -5 and -4)
+-2.000171
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -4 and -3)
+-1.215487
+
+SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -3 and -2)
+-0.329550

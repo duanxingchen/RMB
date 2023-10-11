@@ -14,6 +14,8 @@
     <result column="holder_num" jdbcType="INTEGER" property="holderNum" />
     <result column="oder_num3" jdbcType="INTEGER" property="oderNum3" />
     <result column="oder_num5" jdbcType="INTEGER" property="oderNum5" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="days" jdbcType="INTEGER" property="days" />
     <result column="sort_1_2" jdbcType="DOUBLE" property="sort12" />
     <result column="sort_1_3" jdbcType="DOUBLE" property="sort13" />
     <result column="sort_1_4" jdbcType="DOUBLE" property="sort14" />
@@ -36,7 +38,7 @@
 
   <sql id="Base_Column_List">
     id, code, name, holder_name,report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
-    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market,avg_assets, flow_market, ten_flow_holder_ratio,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6,count,days, market,avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, create_time, update_time, dong_cai_industry, industry_big,
     industry_middle, listing_date
   </sql>
@@ -45,20 +47,20 @@
   <insert id="insert" parameterType="dzr.holder.entity.Holder">
     insert into statistics.holder
     (code, name,holder_name, report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
-    sort_1_3, sort_1_4, sort_1_5, sort_1_6, market, avg_assets, flow_market, ten_flow_holder_ratio,
+    sort_1_3, sort_1_4, sort_1_5, sort_1_6, count,days,market, avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, dong_cai_industry, industry_big,
     industry_middle, listing_date)
     values
       (#{code},#{name},#{holderName},#{reportDate},#{priceRatio},#{noticePrice},#{price},#{makerVsSanHuRatio},
       #{holderNum},#{oderNum3},#{oderNum5},#{sort12},#{sort13},
-      #{sort14},#{sort15},#{sort16},
+      #{sort14},#{sort15},#{sort16},#{count},#{days},
       #{market},#{avgAssets},#{flowMarket},#{tenFlowHolderRatio},
       #{makersRatio},#{makersCost},#{sanHuRatio},#{dongCaiIndustry},
       #{industryBig},#{industryMiddle},#{listingDate})
     on duplicate key update update_time = now()
   </insert>
 
-  <delete id="delete" parameterType="java.util.List">
+  <delete id="delete" >
     delete from statistics.holder where code = #{code}
   </delete>
 

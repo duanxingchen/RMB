@@ -1,5 +1,6 @@
 package dzr;
 
+import dzr.common.config.ThreadPools;
 import dzr.holder.init.HolderNumInitData;
 import dzr.holder.init.TenFlowHolderInitData;
 import dzr.holder.mapper.HolderMapper;
@@ -11,13 +12,20 @@ import dzr.info.mapper.SecurityCodeMapper;
 import dzr.transaction.init.SinaTranDetailInitData;
 import dzr.transaction.init.TranDetailInitData;
 import dzr.transaction.init.TransactionInitData;
+import dzr.transaction.service.SlideService;
 import dzr.transaction.service.impl.CostServiceImpl;
 import dzr.transaction.service.impl.JianCangServiceImpl;
+import dzr.transaction.service.impl.JianCangTXServiceImpl;
+import dzr.transaction.service.impl.SlideServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author dzr
@@ -56,6 +64,9 @@ public class HolderTest {
     JianCangServiceImpl jianCangService;
 
     @Autowired
+    JianCangTXServiceImpl jianCangTXService;
+
+    @Autowired
     HolderMapper holderMapper;
 
     @Autowired
@@ -63,6 +74,19 @@ public class HolderTest {
 
     @Autowired
     TranDetailInitData tranDetailInitData;
+
+
+    @Autowired
+    SlideServiceImpl slideService;
+
+
+    @Test
+    public void slideService(){
+        securityCodeMapper.selectAll().forEach(securityCode -> {
+            slideService.calculate(securityCode);
+        });
+
+    }
 
     @Test
     public void securityCodeInitData(){
@@ -96,8 +120,8 @@ public class HolderTest {
 
     @Test
     public void holderService(){
-        //holderNumInitData();
-        transactionInitData();
+        holderNumInitData();
+        //transactionInitData();
         holderService.calculate();
         costService.calculate();
     }
@@ -113,15 +137,15 @@ public class HolderTest {
             securityCode.setCode(holder.getCode());
             sinaTranDetailInitData.remountByCode(securityCode);
         });
-
     }
 
     /**
      * 腾讯当日明细
      */
     @Test
-    public void tranDetailInitData(){
+    public void tranDetailTXInitData(){
         tranDetailInitData.remountPullDataFromWeb();
+        //jianCangTXService();
     }
 
     /**
@@ -129,14 +153,39 @@ public class HolderTest {
      */
     @Test
     public void jianCangService(){
-       /* SecurityCode securityCode = new SecurityCode();
-        securityCode.setCode("000712");
-        securityCode.setName("锦龙");*/
-        //jianCangService.calculate(securityCode);
         securityCodeMapper.selectAll().forEach(securityCode -> {
             jianCangService.calculate(securityCode);
         });
 
+    }
+
+
+    @Test
+    public void jianCangTXService(){
+        List<SecurityCode> securityCodes = securityCodeMapper.selectAll();
+        AtomicInteger num = new AtomicInteger();
+        securityCodes.forEach(securityCode -> {
+            ThreadPoolExecutor executor = ThreadPools.getExecutor();
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    jianCangTXService.calculate(securityCode);
+                    num.getAndIncrement();
+                }
+            });
+        });
+
+        while (true){
+            if (Math.abs(num.get() - securityCodes.size()) < 1){
+                try {
+                    Thread.sleep(60000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                break;
+            }
+        }
     }
 }
 

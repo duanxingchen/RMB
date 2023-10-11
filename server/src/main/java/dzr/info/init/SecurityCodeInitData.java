@@ -39,7 +39,9 @@ public class SecurityCodeInitData {
                 SecurityCode securityCode = new SecurityCode();
                 securityCode.setCode(info.getString("f12"));
                 securityCode.setName(info.getString("f14"));
-                securityCodes.add(securityCode);
+                if(!securityCode.getCode().startsWith("8")){
+                    securityCodes.add(securityCode);
+                }
             }
         }
         securityCodeMapper.batchInsert(securityCodes);

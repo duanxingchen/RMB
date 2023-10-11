@@ -35,15 +35,19 @@ public class SlideServiceImpl implements SlideService {
 
     private double boTelThreshold = 1;
     private int numThreshold = 1000;
-    private int RangeThreshold = 20;
+    private int RangeThreshold = 30;
 
 
     @Override
     public void calculate(SecurityCode securityCode) {
-        List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
+        log.info(securityCode.toString());
+        List<Transaction> transactions = transactionMapper.selectReinstatementByCodeAndReportDates(securityCode.getCode(),DateUtils.strToDate("2020-01-01 00:00:00"));
         transactions.sort(Comparator.comparing(Transaction::getReportDate));
         List<Slide> slides = selfAdaption(securityCode,transactions,numThreshold, RangeThreshold);
-        slideMapper.batchInsert(slides);
+        if (slides.size() > 0){
+            slideMapper.batchDelete(slides);
+            slideMapper.batchInsert(slides);
+        }
     }
 
     private List<Slide> selfAdaption(SecurityCode securityCode,List<Transaction> transactions,int numThreshold,int RangeThreshold) {

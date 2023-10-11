@@ -52,6 +52,10 @@ public class Holder implements Serializable {
      */
     private Integer oderNum5;
 
+    private Integer days;
+
+    private Integer count;
+
     /**
      * 股东人数最新排名与倒数第二排名的人数变动比
      */

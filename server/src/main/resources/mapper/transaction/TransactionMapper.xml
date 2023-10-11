@@ -106,7 +106,7 @@
     select
     <include refid="Base_Column_List" />
     from transaction
-    where (report_date between #{startDate} and #{endDate} ) and reinstatement = '1' and data_type = '101' and
+    where (report_date > #{date} ) and reinstatement = '1' and data_type = '101' and
     code = #{code}
   </select>
 

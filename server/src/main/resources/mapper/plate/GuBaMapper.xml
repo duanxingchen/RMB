@@ -23,13 +23,15 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <insert id="batchInsert" parameterType="java.util.List">
+  <insert id="insert" parameterType="dzr.plate.entity.GuBa">
     insert ignore into guba
     (code, name, rank_num, rank_num_date, line_rank_num, line_rank_num_date,
     yesterday_rank_num, yesterday_rank_num_date)
     values
-    <foreach collection="list" item="tran" separator=",">
-      (#{tran.code},#{tran.name},#{tran.rankNum},#{tran.rankNumDate},#{tran.lineRankNum},#{tran.lineRankNumDate},#{tran.yesterdayRankNum},#{tran.yesterdayRankNumDate})
-    </foreach>
+      (#{code},#{name},#{rankNum},#{rankNumDate},#{lineRankNum},#{lineRankNumDate},#{yesterdayRankNum},#{yesterdayRankNumDate})
   </insert>
+
+  <delete id="delete" >
+    delete from guba where code = #{code}
+  </delete>
 </mapper>

@@ -14,13 +14,12 @@ import java.util.concurrent.TimeUnit;
  * @Description:
  */
 public class ThreadPools {
-    private final static Logger log = LoggerFactory.getLogger(ThreadPools.class);
 
     private volatile static ThreadPoolExecutor executor = null;
     private final static int corePoolSize = 10;
     private final static int maximumPoolSize = 10;
     private final static int keepAliveTime = 60;
-    private final static int capacity =  5000;
+    private final static int capacity =  5;
 
     public static ThreadPoolExecutor getExecutor(){
         if (executor == null){

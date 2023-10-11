@@ -5,6 +5,8 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="day1_inMemory" jdbcType="DOUBLE" property="day1InMemory" />
+    <result column="day2_inMemory" jdbcType="DOUBLE" property="day2InMemory" />
     <result column="day3_inMemory" jdbcType="DOUBLE" property="day3InMemory" />
     <result column="day3_inTimes" jdbcType="DOUBLE" property="day3InTimes" />
     <result column="day5_inMemory" jdbcType="DOUBLE" property="day5InMemory" />
@@ -17,16 +19,16 @@
     <result column="day60_inTimes" jdbcType="DOUBLE" property="day60InTimes" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name,day3_inMemory,day3_inTimes, day5_inMemory,day5_inTimes,
+    id, code, name,day1_inMemory,day2_inMemory,day3_inMemory,day3_inTimes, day5_inMemory,day5_inTimes,
     day10_inMemory,day10_inTimes,day30_inMemory,day30_inTimes,day60_inMemory,day60_inTimes
   </sql>
 
   <insert id="insert" parameterType="dzr.transaction.entity.Cost">
     insert IGNORE into statistics.jian_cang
-    (code, name,day3_inMemory,day3_inTimes, day5_inMemory,day5_inTimes,
+    (code, name,day1_inMemory,day2_inMemory,day3_inMemory,day3_inTimes, day5_inMemory,day5_inTimes,
      day10_inMemory,day10_inTimes,day30_inMemory,day30_inTimes,day60_inMemory,day60_inTimes)
     values
-      (#{code},#{name},#{day3InMemory},#{day3InTimes},#{day5InMemory},#{day5InTimes},
+      (#{code},#{name},#{day1InMemory},#{day2InMemory},#{day3InMemory},#{day3InTimes},#{day5InMemory},#{day5InTimes},
        #{day10InMemory},#{day10InTimes},#{day30InMemory},#{day30InTimes},#{day60InMemory},#{day60InTimes})
   </insert>
 
