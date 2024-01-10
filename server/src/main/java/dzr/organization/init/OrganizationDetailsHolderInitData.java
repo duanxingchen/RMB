@@ -36,16 +36,23 @@ public class OrganizationDetailsHolderInitData {
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
-            ArrayList<OrganizationDetailsHolder> organizationDetailsHolders = new ArrayList<>();
+            try{
+                log.info(securityCode.toString());
+                ArrayList<OrganizationDetailsHolder> organizationDetailsHolders = new ArrayList<>();
 
-            List<String> reportDates =  ReportDateUtils.getReportDateWithString(securityCode.getListingDate());
+                List<String> reportDates =  ReportDateUtils.getNewestFixedReportDatesString(1);
 
-            for (int j = 0; j < reportDates.size(); j++) {
-                int pages = getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),1);
-                for (int i = 1; i < pages; i++) {
-                    getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),i);
+                for (int j = 0; j < reportDates.size(); j++) {
+                    int pages = getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),1);
+                    for (int i = 1; i < pages; i++) {
+                        getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),i);
+                    }
                 }
+                organizationDetailsHolderMapper.batchInsert(organizationDetailsHolders);
+            }catch (Exception exception){
+                exception.printStackTrace();
             }
+
         });
 
     }
@@ -79,7 +86,9 @@ public class OrganizationDetailsHolderInitData {
                 detailsHolder.setNetAssetRatio(one.getDouble("netasset_ratio"));
                 detailsHolder.setOrgNameAbbr(one.getString("org_name_abbr"));
                 organizationDetailsHolders.add(detailsHolder);
+
             }
+
             return page;
         }
         return 0;

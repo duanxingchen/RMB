@@ -9,6 +9,7 @@ import dzr.info.entity.SecurityCode;
 import dzr.info.init.CompanyInfoInitData;
 import dzr.info.init.SecurityCodeInitData;
 import dzr.info.mapper.SecurityCodeMapper;
+import dzr.organization.init.OrganizationDetailsHolderInitData;
 import dzr.transaction.init.SinaTranDetailInitData;
 import dzr.transaction.init.TranDetailInitData;
 import dzr.transaction.init.TransactionInitData;
@@ -79,6 +80,14 @@ public class HolderTest {
     @Autowired
     SlideServiceImpl slideService;
 
+    @Autowired
+    OrganizationDetailsHolderInitData organizationDetailsHolderInitData;
+
+    @Test
+    public void organizationDetailsHolderInitData(){
+        organizationDetailsHolderInitData.remountPullDataFromWeb();
+    }
+
 
     @Test
     public void slideService(){
@@ -118,12 +127,13 @@ public class HolderTest {
         holderNumInitData.remountPullDataFromWeb();
     }
 
+
     @Test
     public void holderService(){
-        holderNumInitData();
-        //transactionInitData();
+       holderNumInitData();
+        transactionInitData();
         holderService.calculate();
-        costService.calculate();
+        //costService.calculate();
     }
 
     /**

@@ -15,8 +15,10 @@ import dzr.info.entity.SecurityCode;
 import dzr.info.mapper.CompanyInfoMapper;
 import dzr.info.mapper.SecurityCodeMapper;
 import dzr.organization.entity.OrganizationDetailRate;
+import dzr.organization.entity.OrganizationDetailsHolder;
 import dzr.organization.entity.TenFlowHolder;
 import dzr.organization.mapper.OrganizationDetailRateMapper;
+import dzr.organization.mapper.OrganizationDetailsHolderMapper;
 import dzr.organization.mapper.TenFlowHolderMapper;
 import dzr.transaction.entity.Transaction;
 import dzr.transaction.mapper.TransactionMapper;
@@ -42,6 +44,7 @@ public class HolderServiceImpl implements HolderService {
     private final HolderNumMapper holderNumMapper;
     private final TransactionMapper transactionMapper;
     private final HolderMapper holderMapper;
+    private final OrganizationDetailsHolderMapper organizationDetailsHolderMapper;
 
     public void calculate() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
@@ -49,10 +52,11 @@ public class HolderServiceImpl implements HolderService {
             List<TenFlowHolder> tenFlowHolders = tenFlowHolderMapper.selectByCode(securityCode.getCode());
             List<HolderNum> holderNums =  holderNumMapper.selectByCode(securityCode.getCode());
             List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
+            List<OrganizationDetailsHolder> organizationDetailsHolders = organizationDetailsHolderMapper.selectByCode(securityCode.getCode());
 
             if (holderNums.size() > 0 && transactions.size() >0){
                 log.info(securityCode.toString());
-                HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders);
+                HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders,organizationDetailsHolders);
                 holderDto.doit();
             }else {
                 log.error("股东人数错误: {}",securityCode.toString());
@@ -62,6 +66,7 @@ public class HolderServiceImpl implements HolderService {
     }
 
     private class HolderDto{
+        private final List<OrganizationDetailsHolder> organizationDetailsHolders;
         private Holder holder;
         private List<HolderNum> holderNums;
         private List<Transaction> transactions;
@@ -69,13 +74,14 @@ public class HolderServiceImpl implements HolderService {
         private CompanyInfo companyInfo;
         private List<TenFlowHolder> tenFlowHolders;
 
-        private HolderDto(SecurityCode securityCode, Holder holder, List<HolderNum> holderNums, List<Transaction> transactions, CompanyInfo companyInfo, List<TenFlowHolder> tenFlowHolders) {
+        private HolderDto(SecurityCode securityCode, Holder holder, List<HolderNum> holderNums, List<Transaction> transactions, CompanyInfo companyInfo, List<TenFlowHolder> tenFlowHolders, List<OrganizationDetailsHolder> organizationDetailsHolders) {
             this.holder = holder;
             this.holderNums = holderNums;
             this.transactions = transactions;
             this.securityCode = securityCode;
             this.companyInfo = companyInfo;
             this.tenFlowHolders = tenFlowHolders;
+            this.organizationDetailsHolders =organizationDetailsHolders;
         }
         public void doit(){
             try {
@@ -116,10 +122,30 @@ public class HolderServiceImpl implements HolderService {
                  */
                 calculatePrice();
 
+                /**
+                 * 计算是否包括机构
+                 */
+                calculateOrganization();
+
                 holderMapper.delete(holder);
                 holderMapper.insert(holder);
             }catch (Exception e){
                 e.printStackTrace();
+
+            }
+
+        }
+
+        private void calculateOrganization() {
+            if (organizationDetailsHolders.size() > 0){
+                List<Date> newestReportDates = ReportDateUtils.getNewestReportDates(1);
+                List<String> collect = organizationDetailsHolders.stream().filter(organizationDetailsHolder ->
+                        organizationDetailsHolder.getReportDate().getTime() == newestReportDates.get(0).getTime() &&
+                                (organizationDetailsHolder.getHolderName().contains("私募") || organizationDetailsHolder.getHolderName().contains("社保")))
+                        .map(OrganizationDetailsHolder::getHolderName).collect(Collectors.toList());
+                if (collect.size() >0){
+                    holder.setHolderName(collect.toString());
+                }
             }
 
         }
@@ -274,6 +300,10 @@ public class HolderServiceImpl implements HolderService {
             holder.setSort14(calculateSortRate(this.holderNums,1,4));
             holder.setSort15(calculateSortRate(this.holderNums,1,5));
             holder.setSort16(calculateSortRate(this.holderNums,1,6));
+            holder.setSort17(calculateSortRate(this.holderNums,1,7));
+            holder.setSort18(calculateSortRate(this.holderNums,1,8));
+            holder.setSort19(calculateSortRate(this.holderNums,1,9));
+
             holder.setCode(securityCode.getCode());
             holder.setName(securityCode.getName());
             holder.setHolderNum(newestHolderNum.getHolderNum().intValue());

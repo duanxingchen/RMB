@@ -80,6 +80,9 @@ public class Holder implements Serializable {
      * 股东人数最新排名与倒数第六排名的人数变动比
      */
     private Double sort16;
+    private Double sort17;
+    private Double sort18;
+    private Double sort19;
 
     /**
      * 人均持股金额（万）

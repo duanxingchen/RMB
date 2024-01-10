@@ -21,7 +21,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://172.16.63.143:3306/security?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/security?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.jdbc.Driver
     druid:
       # 初始化大小，最小，最大
