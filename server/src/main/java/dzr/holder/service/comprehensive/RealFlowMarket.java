@@ -42,7 +42,7 @@ public class RealFlowMarket implements Filter{
     public List<SecurityCode> filter(List<SecurityCode> securityCodeList){
         ArrayList<SecurityCode> includeSecurityCodes = new ArrayList<>();
         securityCodeList.forEach(securityCode -> {
-            log.info("Shareholders : {}",securityCode);
+            log.info("RealFlowMarket : {}",securityCode);
             List<TenFlowHolder> tenFlowHolders = tenFlowHolderMapper.selectByCode(securityCode.getCode());
             List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
             List<HolderNum> holderNums =  holderNumMapper.selectByCode(securityCode.getCode());

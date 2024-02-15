@@ -28,6 +28,7 @@ public class PrivateEquity implements Filter{
     public List<SecurityCode> filter(List<SecurityCode> securityCodeList) {
         ArrayList<SecurityCode> includeSecurityCodes = new ArrayList<>();
         securityCodeList.stream().forEach(securityCode -> {
+            log.info("PrivateEquity : {}",securityCode);
             List<OrganizationDetailsHolder> organizationDetailsHolders = organizationDetailsHolderMapper.selectByCode(securityCode.getCode());
             organizationDetailsHolders = organizationDetailsHolders.stream().sorted(Comparator.comparing(OrganizationDetailsHolder::getReportDate).reversed()).collect(Collectors.toList());
 

@@ -36,6 +36,9 @@ public class ComprehensiveImpl implements Comprehensive
         securityCodes = shareholders.filter(securityCodes);
         securityCodes = realFlowMarket.filter(securityCodes);
         securityCodes = privateEquity.filter(securityCodes);
+
+        securityCodes.forEach(securityCode -> {
+            log.info("ComprehensiveImpl : {}",securityCode);});
     }
 
 }
