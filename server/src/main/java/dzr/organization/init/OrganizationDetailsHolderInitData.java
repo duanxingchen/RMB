@@ -48,7 +48,9 @@ public class OrganizationDetailsHolderInitData {
                         getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),i);
                     }
                 }
-                organizationDetailsHolderMapper.batchInsert(organizationDetailsHolders);
+                if (organizationDetailsHolders.size() >0 ){
+                    organizationDetailsHolderMapper.batchInsert(organizationDetailsHolders);
+                }
             }catch (Exception exception){
                 exception.printStackTrace();
             }

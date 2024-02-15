@@ -87,6 +87,10 @@ public class HolderServiceImpl implements HolderService {
             try {
                 transactions = transactions.stream().sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
                 holderNums = holderNums.stream().sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
+                /**
+                 * 初始化股东人数，取3个平均值，最近一期的人数不变
+                 */
+                initiateHolderNums(holderNums);
 
                 /**
                  * 人数减少期数和天数
@@ -132,6 +136,30 @@ public class HolderServiceImpl implements HolderService {
             }catch (Exception e){
                 e.printStackTrace();
 
+            }
+
+        }
+
+        /**
+         *
+         * @param holderNums 已经按最新日期排序的股人数
+         */
+        private void initiateHolderNums(List<HolderNum> holderNums) {
+            ArrayList<Long> newHolderNums = new ArrayList<>();
+            if (holderNums.size() < 3){
+                return ;
+            }
+
+            /**
+             * 最新一期股东人数不变
+             */
+            newHolderNums.add(holderNums.get(0).getHolderNum());
+            for (int i = 1; i < (holderNums.size() - 2); i++) {
+                long l = (holderNums.get(i - 1).getHolderNum() + holderNums.get(i).getHolderNum() + holderNums.get(i + 1).getHolderNum()) / 3;
+                newHolderNums.add(l);
+            }
+            for (int i = 0; i < newHolderNums.size(); i++) {
+                holderNums.get(i).setHolderNum(newHolderNums.get(i));
             }
 
         }
