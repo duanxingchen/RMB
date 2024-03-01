@@ -36,7 +36,7 @@ public class SinaTranDetailInitData {
 
     private static String url = "http://market.finance.sina.com.cn/transHis.php?symbol=$code&date=$reportDate&page=$page";
 
-    private static int DAYS = 60;
+    private static int DAYS = 1;
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {

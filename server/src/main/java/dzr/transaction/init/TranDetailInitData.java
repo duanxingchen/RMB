@@ -39,11 +39,11 @@ public class TranDetailInitData  {
         AtomicInteger num = new AtomicInteger();
         List<SecurityCode> securityCodes = securityCodeMapper.selectAll();
         securityCodes.forEach(securityCode -> {
-            ThreadPoolExecutor executor = ThreadPools.getExecutor();
-            executor.execute(new Runnable() {
+            //ThreadPoolExecutor executor = ThreadPools.getExecutor();
+            /*executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    try{
+                    try{*/
                         ArrayList<TranDetail> tranDetails = new ArrayList<>();
                         Date nowDate = DateUtils.getNowShortDate();
                         if (DateUtils.getHours() < 9){
@@ -82,15 +82,17 @@ public class TranDetailInitData  {
                             });
                         }
                         synchronized (TranDetailInitData.class){
-                            tranDetailTXMapper.batchInsert(tranDetails);
+                            if (tranDetails.size() > 0){
+                                tranDetailTXMapper.batchInsert(tranDetails);
+                            }
                         }
-                    }catch (Exception e){
+                    /*}catch (Exception e){
                         e.printStackTrace();
                     }finally {
                         num.getAndIncrement();
-                    }
-                }
-            });
+                    }*/
+                //}
+            //});
         });
         while (true){
             if (Math.abs(num.get() - securityCodes.size()) < 20){

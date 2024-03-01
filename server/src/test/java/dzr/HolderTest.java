@@ -141,12 +141,10 @@ public class HolderTest {
      */
     @Test
     public void sinaTranDetailInitData(){
-        holderMapper.selectAll().stream().filter(holder -> holder.getIndustryMiddle()!= null && holder.getIndustryMiddle().equals("证券"))
-                .forEach(holder -> {
-            SecurityCode securityCode = new SecurityCode();
-            securityCode.setCode(holder.getCode());
+        securityCodeMapper.selectAll().forEach(securityCode -> {
             sinaTranDetailInitData.remountByCode(securityCode);
         });
+
     }
 
     /**

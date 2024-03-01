@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class ThreadPools {
 
     private volatile static ThreadPoolExecutor executor = null;
-    private final static int corePoolSize = 10;
-    private final static int maximumPoolSize = 10;
+    private final static int corePoolSize = 2;
+    private final static int maximumPoolSize = 2;
     private final static int keepAliveTime = 60;
     private final static int capacity =  5;
 

@@ -33,7 +33,6 @@ public class OrganizationDetailsHolderInitData {
     private final static String url = "https://data.eastmoney.com/dataapi/zlsj/detail?SHType=&SHCode=&SCode=$code&Pages=$pages&ReportDate=$date&sortField=HOLDER_CODE&sortDirec=1";
 
 
-
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
             try{

@@ -1,71 +1,43 @@
-开盘价统计最高价：
-SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 2 AND 3) AND low > 0
-3.6810986782
+--行业统计
 
-SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 3 AND 4) AND low > 0
-4.7689666460
-
-SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 4 AND 5) AND low > 0
-5.7686765737
-
-SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 5 AND 6) AND low > 0
-6.6321840619
-
-SELECT AVG((high-topen)/topen*100) FROM `transaction`  WHERE (pchg BETWEEN 6 AND 7) AND low > 0
-7.9918172337
+select * from  statistics.holder where listing_date < '2022-01-01' and  report_date > '2023-12-01'  and name not like '%st%'
+order by sort_1_2 desc;
 
 
-
-最高统计，收盘价：
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 2 and 3 AND low > 0
-0.255263
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 3 and 4 AND low > 0
-1.044465
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 4 and 5 AND low > 0
-1.823111
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 5 and 6 AND low > 0
-2.576598
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 6 and 7 AND low > 0
-3.330108
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 7 and 8 AND low > 0
-4.101671
-
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) BETWEEN 8 and 9  AND low > 0
-4.868183
-
-SELECT AVG(pchg) FROM `transaction`  WHERE (((high-topen)/topen*100) BETWEEN 9 and 10 ) AND low > 0
-5.832384
+--行业个股
+select * from  statistics.holder where listing_date < '2021-01-01' and  report_date > '2023-12-01'  and name not like '%st%'   and industry_middle like '%用机械%'
+and LEAST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 0.9
+order by sort_1_2 desc;
 
 
-SELECT AVG(pchg) FROM `transaction`  WHERE ((high-topen)/topen*100) > 10
-12.210981
+--个股
+select * from  statistics.holder where listing_date < '2021-01-01' and  report_date > '2023-1-01' and oder_num5 <4 and name not like '%st%'
+and GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 1.5 and GREATEST(sort_1_2,sort_1_3,sort_1_4) > 1.5 and flow_market < 50
+order by GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) desc;
 
-最低统计，收盘价：
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -10 and -9)
--5.211200
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -9 and -8)
--4.630701
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -8 and -7)
--4.061748
+--私募最多的行业统计（数量）
+select industry_big, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21' group by industry_big order by num desc;
+select industry_middle, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21'  group by industry_middle order by num desc;
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -7 and -6)
--3.408057
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -6 and -5)
--2.725675
+--股东人数减少的行业统计（数量）
+select industry_big, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_big order by num desc;
+select industry_middle, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_middle order by num desc;
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -5 and -4)
--2.000171
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -4 and -3)
--1.215487
 
-SELECT AVG(pchg) FROM `transaction`  WHERE low > 0 AND (((low-topen)/topen*100) BETWEEN -3 and -2)
--0.329550
+--私募最多的行业统计（占比）
+select industry_big, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21' group by industry_big order by num desc;
+select industry_middle, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21'  group by industry_middle order by num desc;
+
+
+--股东人数减少的行业统计（占比）
+select industry_big, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_big order by num desc;
+select industry_middle, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_middle order by num desc;
+
+
+
+
+

@@ -54,9 +54,11 @@ public class HttpClientService {
      */
     public  String doGet(String url) {
         try {
+            System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
             URIBuilder uriBuilder = new URIBuilder(url);
             uriBuilder.setCharset(Consts.UTF_8).build();
             HttpGet httpGet = new HttpGet(uriBuilder.build());
+
             //设置请求头
             //httpGet.setConfig(config);
             httpGet.addHeader("Cookie","focus-certification-pop=-1; Hm_lvt_c3f6328a1a952e922e996c667234cdae=1676600093,1678764202; rz_utm_source=10003; ss_utm_campaign=S-品牌计划-B-PC; ss_utm_sign=baidu; ss_utm_platform=pc; ss_utm_term=私募排排网; ss_utm_content=品专词; ss_bd_vid=11332906562447847715; ss_bd_login_url=https://www.simuwang.com/?utm_source=10003&utm_medium=cpc&utm_campaign=S-%E5%93%81%E7%89%8C%E8%AE%A1%E5%88%92-B-PC&utm_sign=baidu&utm_platform=pc&utm_term=%E7%A7%81%E5%8B%9F%E6%8E%92%E6%8E%92%E7%BD%91&utm_content=%E5%93%81%E4%B8%93%E8%AF%8D&e_crowdid=3507912&bd_vid=11332906562447847715; smppw_tz_auth=1; http_tK_cache=0f864d504045ae470c8ae759009ec5ffc5ce461f; cur_ck_time=1678774435; ck_request_key=TqcA/0yspKYiKyJhZ3rIVqFH58xWD5wsYUFBXid06YI=; passport=2289561\tu7567169905521\tBQUFBQwAAQldUwQBWlBWDFJcAQEGCgkJAFZeXgYHAVY=9710d4c4e7; rz_rem_u_p=ioAGMixUlfo0HIAzhIy1vXM2ydGpoQstH1U+Doh6Vx0=$4r0M6nUP/ZHNMxH4VR6pfhCcc9Q5vNGMivgE0k7Q6Yo=; certification=1; qualified_investor=1; evaluation_result=5; Hm_lpvt_c3f6328a1a952e922e996c667234cdae=1678782076");

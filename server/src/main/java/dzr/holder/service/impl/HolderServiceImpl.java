@@ -6,7 +6,6 @@ import dzr.common.utils.MathUtils;
 import dzr.common.utils.ReportDateUtils;
 import dzr.holder.entity.Holder;
 import dzr.holder.entity.HolderNum;
-import dzr.holder.entity.OderHolder;
 import dzr.holder.mapper.HolderMapper;
 import dzr.holder.mapper.HolderNumMapper;
 import dzr.holder.service.HolderService;
@@ -14,10 +13,8 @@ import dzr.info.entity.CompanyInfo;
 import dzr.info.entity.SecurityCode;
 import dzr.info.mapper.CompanyInfoMapper;
 import dzr.info.mapper.SecurityCodeMapper;
-import dzr.organization.entity.OrganizationDetailRate;
 import dzr.organization.entity.OrganizationDetailsHolder;
 import dzr.organization.entity.TenFlowHolder;
-import dzr.organization.mapper.OrganizationDetailRateMapper;
 import dzr.organization.mapper.OrganizationDetailsHolderMapper;
 import dzr.organization.mapper.TenFlowHolderMapper;
 import dzr.transaction.entity.Transaction;
@@ -57,7 +54,7 @@ public class HolderServiceImpl implements HolderService {
             if (holderNums.size() > 0 && transactions.size() >0){
                 log.info(securityCode.toString());
                 HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders,organizationDetailsHolders);
-                holderDto.doit();
+                holderDto.doIt();
             }else {
                 log.error("股东人数错误: {}",securityCode.toString());
             }
@@ -83,7 +80,7 @@ public class HolderServiceImpl implements HolderService {
             this.tenFlowHolders = tenFlowHolders;
             this.organizationDetailsHolders =organizationDetailsHolders;
         }
-        public void doit(){
+        public void doIt(){
             try {
                 transactions = transactions.stream().sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
                 holderNums = holderNums.stream().sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
@@ -127,7 +124,7 @@ public class HolderServiceImpl implements HolderService {
                 calculatePrice();
 
                 /**
-                 * 计算是否包括机构
+                 * 计算是否包括机构私募
                  */
                 calculateOrganization();
 
@@ -164,11 +161,15 @@ public class HolderServiceImpl implements HolderService {
 
         }
 
+        /**
+         * 包括私募基金
+         */
         private void calculateOrganization() {
             if (organizationDetailsHolders.size() > 0){
                 List<Date> newestReportDates = ReportDateUtils.getNewestReportDates(1);
+                long newWestTimes = organizationDetailsHolders.stream().map(OrganizationDetailsHolder::getReportDate).mapToLong(Date::getTime).max().getAsLong();
                 List<String> collect = organizationDetailsHolders.stream().filter(organizationDetailsHolder ->
-                        organizationDetailsHolder.getReportDate().getTime() == newestReportDates.get(0).getTime() &&
+                        organizationDetailsHolder.getReportDate().getTime() == newWestTimes &&
                                 (organizationDetailsHolder.getHolderName().contains("私募") || organizationDetailsHolder.getHolderName().contains("社保")))
                         .map(OrganizationDetailsHolder::getHolderName).collect(Collectors.toList());
                 if (collect.size() >0){
