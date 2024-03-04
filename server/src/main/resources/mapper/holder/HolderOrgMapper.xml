@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.holder.mapper.HolderOrgMapper">
+  <resultMap id="BaseResultMap" type="dzr.holder.entity.HolderOrg">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="date_num" jdbcType="INTEGER" property="dateNum" />
+    <result column="holder_change_rate" jdbcType="DOUBLE" property="holderChangeRate" />
+    <result column="price_rate" jdbcType="DOUBLE" property="priceRate" />
+    <result column="style" jdbcType="DOUBLE" property="style" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style
+  </sql>
+
+
+  <insert id="insert" parameterType="dzr.holder.entity.HolderOrg">
+    insert ignore into statistics.holder_org
+    (code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style)
+    values
+      (#{code},#{name},#{startTime},#{endTime},#{dateNum},#{holderChangeRate},#{priceRate},#{style})
+  </insert>
+
+  <delete id="delete" >
+    delete from statistics.holder_org where code = #{code}
+  </delete>
+
+</mapper>

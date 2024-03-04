@@ -130,8 +130,8 @@ public class HolderTest {
 
     @Test
     public void holderService(){
-        holderNumInitData();
-        transactionInitData();
+        //holderNumInitData();
+        //transactionInitData();
         holderService.calculate();
         //costService.calculate();
     }

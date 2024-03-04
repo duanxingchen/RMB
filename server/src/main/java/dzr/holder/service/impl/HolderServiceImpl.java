@@ -6,8 +6,10 @@ import dzr.common.utils.MathUtils;
 import dzr.common.utils.ReportDateUtils;
 import dzr.holder.entity.Holder;
 import dzr.holder.entity.HolderNum;
+import dzr.holder.entity.HolderOrg;
 import dzr.holder.mapper.HolderMapper;
 import dzr.holder.mapper.HolderNumMapper;
+import dzr.holder.mapper.HolderOrgMapper;
 import dzr.holder.service.HolderService;
 import dzr.info.entity.CompanyInfo;
 import dzr.info.entity.SecurityCode;
@@ -41,10 +43,12 @@ public class HolderServiceImpl implements HolderService {
     private final HolderNumMapper holderNumMapper;
     private final TransactionMapper transactionMapper;
     private final HolderMapper holderMapper;
+    private final HolderOrgMapper holderOrgMapper;
     private final OrganizationDetailsHolderMapper organizationDetailsHolderMapper;
 
     public void calculate() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
+            //securityCode.setCode("300862");
             CompanyInfo companyInfo = companyInfoMapper.selectOneByCode(securityCode.getCode());
             List<TenFlowHolder> tenFlowHolders = tenFlowHolderMapper.selectByCode(securityCode.getCode());
             List<HolderNum> holderNums =  holderNumMapper.selectByCode(securityCode.getCode());
@@ -66,10 +70,17 @@ public class HolderServiceImpl implements HolderService {
         private final List<OrganizationDetailsHolder> organizationDetailsHolders;
         private Holder holder;
         private List<HolderNum> holderNums;
+        private List<HolderNum> holderNumsOld;
         private List<Transaction> transactions;
         private SecurityCode securityCode;
         private CompanyInfo companyInfo;
         private List<TenFlowHolder> tenFlowHolders;
+
+        /**
+         * 机构建仓风格阈值
+         */
+        private double newThreshold = 0.2;
+        private double oldThreshold = 0.2;
 
         private HolderDto(SecurityCode securityCode, Holder holder, List<HolderNum> holderNums, List<Transaction> transactions, CompanyInfo companyInfo, List<TenFlowHolder> tenFlowHolders, List<OrganizationDetailsHolder> organizationDetailsHolders) {
             this.holder = holder;
@@ -84,10 +95,16 @@ public class HolderServiceImpl implements HolderService {
             try {
                 transactions = transactions.stream().sorted(Comparator.comparing(Transaction::getReportDate).reversed()).collect(Collectors.toList());
                 holderNums = holderNums.stream().sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
+
                 /**
                  * 初始化股东人数，取3个平均值，最近一期的人数不变
                  */
                 initiateHolderNums(holderNums);
+                /**
+                 * 用于主力风格计算
+                 */
+                holderNumsOld = holderNums.stream().filter(holderNum -> (System.currentTimeMillis() - holderNum.getReportDate().getTime())/365/24/3600000 < 2)
+                        .sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
 
                 /**
                  * 人数减少期数和天数
@@ -128,6 +145,12 @@ public class HolderServiceImpl implements HolderService {
                  */
                 calculateOrganization();
 
+
+                /**
+                 * 计算股东建仓风格
+                 */
+                calculateHolderOrg();
+
                 holderMapper.delete(holder);
                 holderMapper.insert(holder);
             }catch (Exception e){
@@ -135,6 +158,84 @@ public class HolderServiceImpl implements HolderService {
 
             }
 
+        }
+
+        private void calculateHolderOrg() {
+            HolderOrg holderOrg = new HolderOrg();
+
+            HolderNum startHolder = null;
+            HolderNum endHolder = null;
+            int startNum =0;
+
+
+            /**
+             * 上市时间满2年
+             */
+            if ((System.currentTimeMillis() - holder.getListingDate().getTime())/365/24/3600000 < 2){
+                return;
+            }
+
+            /**
+             * 股东人数减少
+             */
+            if(holder.getSort12() < 0.9 || holder.getSort13() < 0.9 || holder.getSort14() < 0.9){
+                return;
+            }
+
+            /**
+             * 1 找开始时间，从当前位置倒退，若大于阈值，则为开始时间，
+             */
+            for (int i = 0; i < holderNumsOld.size() -1; i++) {
+                if ((holderNumsOld.get(i+1).getHolderNum() - holderNumsOld.get(i).getHolderNum())/(holderNumsOld.get(i).getHolderNum()*1.0) > newThreshold*(DateUtils.differentDays(holderNumsOld.get(i+1).getReportDate(),holderNumsOld.get(i).getReportDate()))/90.0){
+                    endHolder =  holderNumsOld.get(i);
+                    startNum = i;
+                    break;
+                }
+            }
+            /**
+             * 没有任何一期超过阈值，退出
+             */
+            if (endHolder == null){
+                return;
+            }
+
+
+            /**
+             * 2 找结束时间，从开始时间倒推，若小于阈值，则为结束时间。
+             */
+            for (int i = startNum+1; i < holderNumsOld.size() -1; i++) {
+                if ((holderNumsOld.get(i+1).getHolderNum() - holderNumsOld.get(i).getHolderNum())/(holderNumsOld.get(i).getHolderNum()*1.0) < oldThreshold){
+                    startHolder = holderNumsOld.get(i);
+                    break;
+                }
+            }
+            /**
+             * 没有任何一期小于阈值，退出
+             */
+            if (startHolder == null){
+                return;
+            }
+
+            Date startDate = startHolder.getReportDate();
+            Date endDate = endHolder.getReportDate();
+
+            Long startHolderNum = startHolder.getHolderNum();
+            Long endHolderNum = endHolder.getHolderNum();
+
+
+            double startPrice = this.transactions.stream().filter(transaction -> transaction.getReportDate().getTime() <= startDate.getTime()).findFirst().get().getTclose();
+            double endPrice = this.transactions.stream().filter(transaction -> transaction.getReportDate().getTime() <= endDate.getTime()).findFirst().get().getTclose();
+
+            holderOrg.setCode(securityCode.getCode());
+            holderOrg.setName(securityCode.getName());
+            holderOrg.setStartTime(startDate);
+            holderOrg.setEndTime(endDate);
+            holderOrg.setDateNum(DateUtils.differentDays(endDate,startDate));
+            holderOrg.setPriceRate(MathUtils.doubleRetain2Bit((endPrice-startPrice)/startPrice*100));
+            holderOrg.setHolderChangeRate(MathUtils.doubleRetain2Bit((endHolderNum-startHolderNum)/(startHolderNum*1.0)*100));
+            holderOrg.setStyle(MathUtils.doubleRetain2Bit(holderOrg.getHolderChangeRate()*holderOrg.getPriceRate()/holderOrg.getDateNum()));
+            holderOrgMapper.delete(holderOrg);
+            holderOrgMapper.insert(holderOrg);
         }
 
         /**
