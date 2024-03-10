@@ -8,6 +8,7 @@ import dzr.info.entity.ConceptStock;
 import dzr.transaction.entity.Transaction;
 import dzr.web.service.TranService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @Description:
  */
 @Service
+@Primary
 public class TranServiceImpl implements TranService {
 
     @Autowired
@@ -129,7 +131,7 @@ public class TranServiceImpl implements TranService {
             }
         });
 
-        jsonObject.put("sum",pchgData.stream().mapToDouble(Double::doubleValue).sum());
+        jsonObject.put("sum", MathUtils.doubleRetain2Bit(pchgData.stream().mapToDouble(Double::doubleValue).sum()));
         jsonObject.put("count",count);
         jsonObject.put("name",industry);
         jsonObject.put("pchgData",pchgData);

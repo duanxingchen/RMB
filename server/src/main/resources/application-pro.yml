@@ -1,5 +1,5 @@
 server:
-  port: 28000
+  port: 28003
 
 
 spring:
@@ -41,7 +41,7 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: classpath:mapper/holder/*.xml,classpath:mapper/info/*.xml,classpath:mapper/integration/*.xml,classpath:mapper/organization/*.xml,classpath:mapper/plate/*.xml,classpath:mapper/transaction/*.xml
+  mapper-locations: classpath:mapper/quantization/*.xml,classpath:mapper/holder/*.xml,classpath:mapper/info/*.xml,classpath:mapper/integration/*.xml,classpath:mapper/organization/*.xml,classpath:mapper/plate/*.xml,classpath:mapper/transaction/*.xml
   #type-aliases-package: dzr.*
 
 

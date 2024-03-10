@@ -10,6 +10,8 @@ import dzr.info.init.CompanyInfoInitData;
 import dzr.info.init.SecurityCodeInitData;
 import dzr.info.mapper.SecurityCodeMapper;
 import dzr.organization.init.OrganizationDetailsHolderInitData;
+import dzr.plate.init.PlateStockInitData;
+import dzr.quantization.service.TradingStockService;
 import dzr.transaction.init.SinaTranDetailInitData;
 import dzr.transaction.init.TranDetailInitData;
 import dzr.transaction.init.TransactionInitData;
@@ -83,6 +85,18 @@ public class HolderTest {
     @Autowired
     OrganizationDetailsHolderInitData organizationDetailsHolderInitData;
 
+
+    @Autowired
+    PlateStockInitData plateStockInitData;
+
+    @Autowired
+    TradingStockService tradingStockService;
+
+    @Test
+    public void plateStockInitData(){
+        plateStockInitData.remountPullDataFromWeb();
+    }
+
     @Test
     public void organizationDetailsHolderInitData(){
         organizationDetailsHolderInitData.remountPullDataFromWeb();
@@ -128,11 +142,16 @@ public class HolderTest {
     }
 
 
+    /**
+     * 顺序不能乱
+     */
     @Test
     public void holderService(){
-        //holderNumInitData();
-        //transactionInitData();
+        holderNumInitData();
+        transactionInitData();
         holderService.calculate();
+        plateStockInitData.remountPullDataFromWeb();
+        tradingStockService.noticePrice();
         //costService.calculate();
     }
 

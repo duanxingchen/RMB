@@ -28,3 +28,12 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+npm cache clean --force
+npm config list
+npm config set registry https://registry.npmmirror.com
+npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+
+
+http://127.0.0.1:9090/#/

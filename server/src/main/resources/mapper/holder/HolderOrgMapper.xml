@@ -11,22 +11,30 @@
     <result column="holder_change_rate" jdbcType="DOUBLE" property="holderChangeRate" />
     <result column="price_rate" jdbcType="DOUBLE" property="priceRate" />
     <result column="style" jdbcType="DOUBLE" property="style" />
+    <result column="ten_day_max_price" jdbcType="DOUBLE" property="tenDayMaxPrice" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style
+    id, code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style,ten_day_max_price
   </sql>
 
 
   <insert id="insert" parameterType="dzr.holder.entity.HolderOrg">
     insert ignore into statistics.holder_org
-    (code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style)
+    (code, name, start_time,end_time,date_num,holder_change_rate,price_rate,style,ten_day_max_price)
     values
-      (#{code},#{name},#{startTime},#{endTime},#{dateNum},#{holderChangeRate},#{priceRate},#{style})
+      (#{code},#{name},#{startTime},#{endTime},#{dateNum},#{holderChangeRate},#{priceRate},#{style},#{tenDayMaxPrice})
   </insert>
 
   <delete id="delete" >
     delete from statistics.holder_org where code = #{code}
   </delete>
+
+  <select id="selectOneByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.holder_org
+    where code = #{code}
+  </select>
 
 </mapper>

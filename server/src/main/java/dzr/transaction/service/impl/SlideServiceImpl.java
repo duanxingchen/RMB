@@ -35,7 +35,7 @@ public class SlideServiceImpl implements SlideService {
 
     private double boTelThreshold = 1;
     private int numThreshold = 1000;
-    private int RangeThreshold = 30;
+    private int RangeThreshold = 5;
 
 
     @Override

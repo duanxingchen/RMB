@@ -18,6 +18,7 @@ import dzr.web.service.todo.PlateCount;
 import dzr.web.service.todo.PlateStockTop;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Primary
 public class MonitorServiceImpl implements MonitorService {
     private final TransactionMapper transactionMapper;
     private final HolderMapper holderMapper;

@@ -216,6 +216,24 @@ public class HolderServiceImpl implements HolderService {
                 return;
             }
 
+
+            /**
+             * 计算每日成交均价
+             */
+            transactions.forEach(transaction -> {
+                double tprice = transaction.getVaturnover() / transaction.getVoturnover()/100.00;
+                transaction.setTclose(tprice);
+            });
+
+            /**
+             * 先后递推，计算本次最多跌幅（回撤）
+             */
+
+            /**
+             * 最近10天的最大值
+             */
+            double tenDayMaxPrice = transactions.stream().limit(10).mapToDouble(Transaction::getTclose).max().getAsDouble();
+
             Date startDate = startHolder.getReportDate();
             Date endDate = endHolder.getReportDate();
 
@@ -234,6 +252,8 @@ public class HolderServiceImpl implements HolderService {
             holderOrg.setPriceRate(MathUtils.doubleRetain2Bit((endPrice-startPrice)/startPrice*100));
             holderOrg.setHolderChangeRate(MathUtils.doubleRetain2Bit((endHolderNum-startHolderNum)/(startHolderNum*1.0)*100));
             holderOrg.setStyle(MathUtils.doubleRetain2Bit(holderOrg.getHolderChangeRate()*holderOrg.getPriceRate()/holderOrg.getDateNum()));
+            holderOrg.setTenDayMaxPrice(tenDayMaxPrice);
+
             holderOrgMapper.delete(holderOrg);
             holderOrgMapper.insert(holderOrg);
         }

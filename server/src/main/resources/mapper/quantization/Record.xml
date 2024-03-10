@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.quantization.mapper.RecordMapper">
+  <resultMap id="BaseResultMap" type="dzr.quantization.entity.Record">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="trading_time" jdbcType="TIMESTAMP" property="TradingTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,code, name, type, price, trading_time
+  </sql>
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from quantization.record
+  </select>
+
+  <insert id="insert" parameterType="dzr.quantization.entity.PlateHeat">
+    insert ignore into quantization.record
+    (code, name, type, price, trading_time)
+    values
+      (#{code},#{name},#{type},#{price},#{TradingTime})
+  </insert>
+
+</mapper>

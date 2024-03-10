@@ -50,4 +50,6 @@ public class HolderOrg implements Serializable {
      */
     private Double style;
 
+    private Double tenDayMaxPrice;
+
 }

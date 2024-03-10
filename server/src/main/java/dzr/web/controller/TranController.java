@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tran")
-public class tranController {
+public class TranController {
 
     private final CompanyInfoMapper companyInfoMapper;
     private final HolderMapper holderMapper;

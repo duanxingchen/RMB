@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class PlateStockInitData  {
     private final SecurityCodeMapper securityCodeMapper;
     private final HttpClientService httpClientService;
     private final PlateStockMapper plateStockMapper;
-
+    private final static Integer DAYS = 30;
     private final static String dateUrl = "http://push2ex.eastmoney.com/getStockStatisticsChanges?ut=7eea3edcaed734bea9cbfc24409ed989&startdate=$startDate&enddate=20500101&dpt=wzchanges&code=$code&market=$market";
     private final static String url = "http://push2ex.eastmoney.com/getStockChanges?ut=7eea3edcaed734bea9cbfc24409ed989&date=$reportDate&dpt=wzchanges&code=$code&market=$market";
 
@@ -41,6 +42,10 @@ public class PlateStockInitData  {
             List<String> reportDates = getReportDates(securityCode,newestReportDate);
 
             for (int i = 0; i < reportDates.size(); i++) {
+                Date date = DateUtils.strToDate(reportDates.get(i),"yyyyMMdd");
+                if(DateUtils.differentDays(date,DateUtils.getNowDate()) > DAYS){
+                    continue;
+                }
                 String urlPre = url.replace("$code", securityCode.getCode())
                         .replace("$reportDate",reportDates.get(i))
                         .replace("$market", securityCode.getCode().startsWith("6")? "1":"0");
@@ -67,7 +72,10 @@ public class PlateStockInitData  {
                     }
                 }
             }
-            plateStockMapper.batchInsert(plateStocks);
+            if (plateStocks.size() >0 ){
+                plateStockMapper.batchInsert(plateStocks);
+            }
+
         });
 
     }
