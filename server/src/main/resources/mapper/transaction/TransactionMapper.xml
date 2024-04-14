@@ -110,4 +110,16 @@
     code = #{code}
   </select>
 
+
+  <select id="selectReinstatementDataTypeByCodesAndReportDates"   resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction
+    where (report_date between #{startDate} and #{endDate} ) and reinstatement = '1' and data_type = '101' and
+    code in
+    <foreach collection="codes" item="code" separator="," open="(" close=")" index="">
+      #{code}
+    </foreach>  </select>
+
+
 </mapper>

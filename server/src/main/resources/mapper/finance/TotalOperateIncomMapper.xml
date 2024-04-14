@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.finance.mapper.TotalOperateIncomeMapper">
+  <resultMap id="BaseResultMap" type="dzr.finance.entity.TotalOperateIncome">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="variance2" jdbcType="DOUBLE" property="variance2" />
+    <result column="variance3" jdbcType="DOUBLE" property="variance3" />
+    <result column="variance4" jdbcType="DOUBLE" property="variance4" />
+    <result column="variance5" jdbcType="DOUBLE" property="variance5" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="growth2" jdbcType="DOUBLE" property="growth2" />
+    <result column="growth3" jdbcType="DOUBLE" property="growth3" />
+    <result column="growth4" jdbcType="DOUBLE" property="growth4" />
+    <result column="growth5" jdbcType="DOUBLE" property="growth5" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, name,variance2,variance3, variance4, variance5,state,growth2,growth3,growth4,growth5  </sql>
+
+  <insert id="insert" parameterType="dzr.finance.entity.TotalOperateIncome">
+    insert ignore into statistics.total_operate_income (code, name,variance2,variance3, variance4, variance5,state,growth2,growth3,growth4,growth5)
+    values (#{code},#{name},#{variance2},#{variance3},#{variance4},#{variance5},#{state},#{growth2},#{growth3},#{growth4},#{growth5})
+  </insert>
+
+  <delete id="delete" >
+    delete from statistics.total_operate_income where code = #{code}
+  </delete>
+
+  <select id="selectByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from statistics.total_operate_income
+    where code = #{code}
+  </select>
+
+</mapper>

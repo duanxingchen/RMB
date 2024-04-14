@@ -7,9 +7,13 @@ import dzr.common.utils.MathUtils;
 import dzr.common.utils.RobotsService;
 import dzr.holder.entity.HolderOrg;
 import dzr.holder.mapper.HolderOrgMapper;
+import dzr.info.entity.SecurityCode;
+import dzr.info.mapper.SecurityCodeMapper;
 import dzr.quantization.entity.StockPool;
 import dzr.quantization.init.RealtimeAcquisitionStockPrices;
 import dzr.quantization.mapper.StockPoolMapper;
+import dzr.transaction.entity.Transaction;
+import dzr.transaction.mapper.TransactionMapper;
 import dzr.web.controller.MonitorController;
 import dzr.web.controller.TranController;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +40,8 @@ public class TradingStockService {
     private final TranController tranController;
     private final TransDays transDays;
     private final MonitorController monitorController;
+    private final TransactionMapper transactionMapper;
+    private final SecurityCodeMapper securityCodeMapper;
 
     private final RealtimeAcquisitionStockPrices realtimeAcquisitionStockPrices;
     /**
@@ -44,6 +50,12 @@ public class TradingStockService {
     private final static double PRICE_DOWN_RATE = 0.1;
 
     public void noticePrice(){
+        /**
+         * 寻找交易量突变的股票
+         */
+        List<SecurityCode> mutations =findTurnoverMutation();
+
+
         /**
          * 读取标的股票
          */
@@ -77,6 +89,34 @@ public class TradingStockService {
             }
         });
 
+    }
+
+    /**
+     * 成交量异步还可能是主力建仓的过程，全都的前题都是股东人数减少                                                                                                                                     
+     * @return
+     */
+    private List<SecurityCode> findTurnoverMutation() {
+        securityCodeMapper.selectAll().stream().forEach(securityCode -> {
+            List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
+            transactions.sort(Comparator.comparing(Transaction::getReportDate).reversed());
+
+            /**
+             *  当日成交量是前3个或者5个交易日的3倍
+             */
+
+            for (int i = 0; i < transactions.size()-10 && i< 20; i++) {
+                if(transactions.get(i).getTurnover() > 2*(transactions.get(i+1).getTurnover() +transactions.get(i+2).getTurnover() +transactions.get(i+3).getTurnover() +transactions.get(i+4).getTurnover())){
+                    log.info(securityCode.toString());
+                    log.info(transactions.get(i).getReportDate().toString());
+                    break;
+                }
+
+            }
+
+
+        });
+
+        return null;
     }
 
     private String getBlockPrice(int num ) {

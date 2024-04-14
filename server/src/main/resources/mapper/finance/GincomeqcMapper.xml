@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dzr.finance.mapper.GincomeqcMapper">
+  <resultMap id="BaseResultMap" type="dzr.finance.entity.Gincomeqc">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="report_date" jdbcType="DATE" property="reportDate" />
+    <result column="totalOperateIncome" jdbcType="DOUBLE" property="total_operate_income" />
+    <result column="totalOperateCost" jdbcType="DOUBLE" property="total_operate_cost" />
+    <result column="operateCost" jdbcType="DOUBLE" property="operate_cost" />
+    <result column="researchExpense" jdbcType="DOUBLE" property="research_expense" />
+    <result column="operateTaxAdd" jdbcType="DOUBLE" property="operate_tax_add" />
+    <result column="saleExpense" jdbcType="DOUBLE" property="sale_expense" />
+    <result column="manageExpense" jdbcType="DOUBLE" property="manage_expense" />
+    <result column="financeExpense" jdbcType="DOUBLE" property="finance_expense" />
+    <result column="feInterestExpense" jdbcType="DOUBLE" property="fe_interest_expense" />
+    <result column="feInterestIncome" jdbcType="DOUBLE" property="fe_interest_income" />
+    <result column="otherIncome" jdbcType="DOUBLE" property="other_income" />
+    <result column="investIncome" jdbcType="DOUBLE" property="invest_income" />
+    <result column="fairvalueChangeIncome" jdbcType="DOUBLE" property="fairvalue_change_income" />
+    <result column="creditImpairmentIncome" jdbcType="DOUBLE" property="credit_impairment_income" />
+    <result column="operateProfit" jdbcType="DOUBLE" property="operate_profit" />
+    <result column="nonbusinessIncome" jdbcType="DOUBLE" property="nonbusiness_income" />
+    <result column="nonbusinessExpense" jdbcType="DOUBLE" property="nonbusiness_expense" />
+    <result column="totalProfit" jdbcType="DOUBLE" property="total_profit" />
+    <result column="incomeTax" jdbcType="DOUBLE" property="income_tax" />
+    <result column="netprofit" jdbcType="DOUBLE" property="netprofit" />
+    <result column="continuedNetprofit" jdbcType="DOUBLE" property="continued_netprofit" />
+    <result column="parentNetprofit" jdbcType="DOUBLE" property="parent_netprofit" />
+    <result column="deductParentNetprofit" jdbcType="DOUBLE" property="deduct_parent_netprofit" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, name,report_date,total_operate_income, total_operate_cost, operate_cost, research_expense, operate_tax_add, sale_expense, manage_expense, finance_expense, fe_interest_expense,
+    fe_interest_income, other_income, invest_income, fairvalue_change_income,
+     credit_impairment_income, operate_profit, nonbusiness_income, nonbusiness_expense, total_profit, income_tax, netprofit, continued_netprofit, parent_netprofit, deduct_parent_netprofit
+  </sql>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert ignore into gincomeqc (code, name,report_date,total_operate_income, total_operate_cost, operate_cost, research_expense, operate_tax_add, sale_expense, manage_expense, finance_expense, fe_interest_expense,
+    fe_interest_income, other_income, invest_income, fairvalue_change_income,
+    credit_impairment_income, operate_profit, nonbusiness_income, nonbusiness_expense, total_profit, income_tax, netprofit, continued_netprofit, parent_netprofit, deduct_parent_netprofit
+    )
+    values
+    <foreach collection="list" item="tmp" separator=",">
+      (#{tmp.code},#{tmp.name},#{tmp.reportDate},#{tmp.totalOperateIncome},#{tmp.totalOperateCost},#{tmp.operateCost},#{tmp.researchExpense},#{tmp.operateTaxAdd},#{tmp.saleExpense},#{tmp.manageExpense},#{tmp.financeExpense},#{tmp.feInterestExpense}
+      ,#{tmp.feInterestIncome},#{tmp.otherIncome},#{tmp.investIncome},#{tmp.fairvalueChangeIncome}
+      ,#{tmp.creditImpairmentIncome},#{tmp.operateProfit},#{tmp.nonbusinessIncome},#{tmp.nonbusinessExpense},#{tmp.totalProfit},#{tmp.incomeTax},#{tmp.netprofit},#{tmp.continuedNetprofit}
+      ,#{tmp.parentNetprofit},#{tmp.deductParentNetprofit})
+    </foreach>
+  </insert>
+
+
+  <select id="selectByCode"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gincomeqc
+    where code = #{code} And report_date > '2018-01-01'
+  </select>
+</mapper>

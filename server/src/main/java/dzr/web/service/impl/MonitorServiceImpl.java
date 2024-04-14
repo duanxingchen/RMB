@@ -92,6 +92,11 @@ public class MonitorServiceImpl implements MonitorService {
         return array;
     }
 
+    /**
+     * 根据东财行业，拆分东财分组
+     * @param companyInfos
+     * @param map
+     */
     public void updateDongCaiIndustry(List<CompanyInfo> companyInfos, HashMap<String, CompanyInfo> map) {
         companyInfos.forEach(companyInfo -> {
             if (companyInfo.getDongcaiIndustry() != null){
@@ -99,6 +104,9 @@ public class MonitorServiceImpl implements MonitorService {
             }
         });
         Map<String, List<CompanyInfo>> companyMap = map.values().stream().collect(Collectors.groupingBy(CompanyInfo::getDongcaiIndustry));
+        /**
+         * 当行业板块少于50支股票时，向上合并行业板块
+         */
         companyMap.forEach((industry, company) -> {
             if (company.size() < 50){
                 company.forEach(companyInfo -> {

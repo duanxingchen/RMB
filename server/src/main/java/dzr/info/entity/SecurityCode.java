@@ -41,6 +41,12 @@ public class SecurityCode {
         return code.startsWith("6")? "sh"+ code :(code.startsWith("8")? code +".bj":"sz"+ code);
     }
 
+
+
+    public String   getCodeForFinance() {
+        return code.startsWith("6")? code + ".SH" :(code.startsWith("8")? code +".bj": code+".SZ");
+    }
+
     public String getCodeWithNumber() {
         return code.startsWith("6")? "1."+ code :(code.startsWith("8")? code +".bj":"0."+ code);
     }

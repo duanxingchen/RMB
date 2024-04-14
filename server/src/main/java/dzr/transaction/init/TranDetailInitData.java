@@ -39,24 +39,21 @@ public class TranDetailInitData  {
         AtomicInteger num = new AtomicInteger();
         List<SecurityCode> securityCodes = securityCodeMapper.selectAll();
         securityCodes.forEach(securityCode -> {
-            //ThreadPoolExecutor executor = ThreadPools.getExecutor();
-            /*executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try{*/
+            try{
                         ArrayList<TranDetail> tranDetails = new ArrayList<>();
                         Date nowDate = DateUtils.getNowShortDate();
                         if (DateUtils.getHours() < 9){
                             nowDate.setDate(nowDate.getDate() -1);
                         }
-
+            securityCode.setCode("300818");
                         String page = "0";
                         log.info("thread ： {}  name : {}  : page = {}",
                                 Thread.currentThread().getName(), securityCode.toString(),page);
                         while (true){
                             String urlPre = url.replace("$code", securityCode.getCodeWithExchange()).replace("$page",page);
-                            log.debug(urlPre);
+                            log.info(urlPre);
                             HttpClientService httpClientService = new HttpClientService();
+                            Thread.sleep(2000);
                             String[] ret = httpClientService.doGet(urlPre).split(",");
                             if(ret.length < 2){
                                 break;
@@ -80,19 +77,19 @@ public class TranDetailInitData  {
                                 }
                                 tranDetails.add(tranDetail);
                             });
-                        }
-                        synchronized (TranDetailInitData.class){
+
                             if (tranDetails.size() > 0){
                                 tranDetailTXMapper.batchInsert(tranDetails);
+                                tranDetails.clear();
                             }
                         }
-                    /*}catch (Exception e){
+
+                    }catch (Exception e){
                         e.printStackTrace();
                     }finally {
                         num.getAndIncrement();
-                    }*/
-                //}
-            //});
+                    }
+
         });
         while (true){
             if (Math.abs(num.get() - securityCodes.size()) < 20){

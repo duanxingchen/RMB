@@ -36,7 +36,7 @@ public class SinaTranDetailInitData {
 
     private static String url = "http://market.finance.sina.com.cn/transHis.php?symbol=$code&date=$reportDate&page=$page";
 
-    private static int DAYS = 1;
+    private static int DAYS = 5;
 
     public void remountPullDataFromWeb() {
         securityCodeMapper.selectAll().forEach(securityCode -> {
@@ -104,10 +104,10 @@ public class SinaTranDetailInitData {
                 try {
                     if (tbody.size() == 0) {
                         log.info("输入的代码有误或没有交易数据");
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                         break;
                     }
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

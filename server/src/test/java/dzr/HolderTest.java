@@ -147,12 +147,31 @@ public class HolderTest {
      */
     @Test
     public void holderService(){
+        /**
+         * 初始化数据
+         */
         holderNumInitData();
         transactionInitData();
+        plateStockInitData();
+        /**
+         * 计算股东人数
+         */
         holderService.calculate();
-        plateStockInitData.remountPullDataFromWeb();
+        /**
+         * 跟踪股票，发钉钉
+         */
         tradingStockService.noticePrice();
         //costService.calculate();
+    }
+
+
+    @Test
+    public void noticePrice(){
+
+        /**
+         * 跟踪股票，发钉钉
+         */
+        tradingStockService.noticePrice();
     }
 
     /**
@@ -161,6 +180,7 @@ public class HolderTest {
     @Test
     public void sinaTranDetailInitData(){
         securityCodeMapper.selectAll().forEach(securityCode -> {
+            securityCode.setCode("300818");
             sinaTranDetailInitData.remountByCode(securityCode);
         });
 

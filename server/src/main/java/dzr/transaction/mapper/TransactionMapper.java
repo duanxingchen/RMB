@@ -17,6 +17,9 @@ public interface TransactionMapper extends BaseMapper<Transaction> {
 
     List<Transaction> selectReinstatementDataTypeByReportDates(Date startDate, Date endDate);
 
+    List<Transaction> selectReinstatementDataTypeByCodesAndReportDates(List<String>  codes, Date startDate, Date endDate);
+
+
     List<Transaction> selectReinstatementByCodeAndReportDates(String code, Date date);
 
     int countByCodeAndReportDate(String code, Date reportDate);

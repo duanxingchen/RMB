@@ -17,9 +17,11 @@ import dzr.transaction.entity.Transaction;
 import dzr.transaction.mapper.TransactionMapper;
 import dzr.web.service.TranService;
 import dzr.web.service.todo.TranFrom;
+import groovy.util.logging.Log4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tran")
+@Log4j
 public class TranController {
 
     private final CompanyInfoMapper companyInfoMapper;
@@ -54,9 +57,12 @@ public class TranController {
     @RequestMapping(method = RequestMethod.POST,value = "/selectTranHotChartByCodes")
     public JSONObject selectTranHotChartByCodes(@RequestBody TranFrom tranFrom) {
         List<Holder> holders = holderMapper.selectAll();
-        /*List<Transaction> transactions = transactionMapper.selectReinstatementByCodesAndReportDates(tranFrom);
-        return tranService.tranChart(transactions,holders);*/
-        return null;
+        ArrayList<String> codes = new ArrayList<>();
+        for (int i = 0; i < tranFrom.getCodes().length; i++) {
+            codes.add(tranFrom.getCodes()[i]);
+        }
+        List<Transaction> transactions = transactionMapper.selectReinstatementDataTypeByCodesAndReportDates(codes,tranFrom.getDates()[0],tranFrom.getDates()[1]);
+        return tranService.tranChart(transactions,holders);
     }
 
 
