@@ -4,7 +4,7 @@
       <el-col :span="12">
         <span class="demonstration">查询时间段</span>
         <el-date-picker
-          v-model="value"
+          v-model="DateValue"
           type="daterange"
           align="right"
           unlink-panels
@@ -25,7 +25,7 @@
       inject:['submit'],
       data() {
         return {
-          value: '',
+          DateValue: '',
           pickerOptions: {
             shortcuts: [{
               text: '最近一天',
@@ -83,8 +83,8 @@
       },
       methods:{
         pickerSearch(){
-            console.info(this.value)
-            this.submit(this.value);
+            console.info(this.DateValue)
+            this.submit(this.DateValue);
           }
       }
     }

@@ -54,13 +54,14 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public JSONObject holderChart(List<Holder> holders, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks) {
+    public JSONObject holderChart(String form, List<Holder> holders, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks) {
         HashMap<String, ConceptStock> stMap = new HashMap<>();
         conceptStocks.stream().filter(conceptStock -> conceptStock.getConcept().equals("st股")).forEach(conceptStock -> {
             stMap.put(conceptStock.getCode(),conceptStock);
         });
         HashMap<String, CompanyInfo> companyInfoHashMap = new HashMap<>();
-        monitorService.updateDongCaiIndustry(companyInfos,companyInfoHashMap);
+        Integer industryCount = JSONObject.parseObject(form).getInteger("industryCount");
+        monitorService.updateDongCaiIndustry(industryCount,companyInfos,companyInfoHashMap);
         HashMap<String, Holder> holderHashMap = new HashMap<>();
         holders.stream()
                 .filter(holder -> holder.getDongCaiIndustry() != null && holder.getSort12() != 0 && stMap.get(holder.getCode()) == null)
@@ -73,7 +74,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         ArrayList<JSONObject> dongCaiIndustry = new ArrayList<>();
         ArrayList<JSONObject> concept = new ArrayList<>();
-        String[] xAxis ={"sort12","sort13","sort14","sort15","sort16"};
+        String[] xAxis ={"sort12","sort13","sort14","sort15","sort16","sort17","sort18","sort19"};
         ArrayList<String> xAxi = new ArrayList<>(Arrays.asList(xAxis));
 
         groupIndustry.forEach((industry,companyInfoList) ->{
@@ -126,6 +127,10 @@ public class RecommendServiceImpl implements RecommendService {
         data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort14).average().getAsDouble()*100-100));
         data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort15).average().getAsDouble()*100-100));
         data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort16).average().getAsDouble()*100-100));
+        data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort17).average().getAsDouble()*100-100));
+        data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort18).average().getAsDouble()*100-100));
+        data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort19).average().getAsDouble()*100-100));
+
         double flowMarket = ho.stream().mapToDouble(Holder::getFlowMarket).sum();
         double tenFlowHolderRatio = ho.stream().mapToDouble(Holder::getTenFlowHolderRatio).average().getAsDouble();
         jsonObject.put("sum",data.stream().mapToDouble(Double::doubleValue).sum());

@@ -183,7 +183,7 @@
       }
     },
     created() {
-      fetch("http://localhost:28003/monitor/selectPlateStockTop/")
+      fetch("http://192.168.1.5:28003/monitor/selectPlateStockTop/")
         .then(res =>res.json()).then(res => {
         console.log(res);
         this.addData(res);

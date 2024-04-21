@@ -29,10 +29,10 @@ public class TranServiceImpl implements TranService {
 
 
     @Override
-    public JSONObject holderChart(List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks, List<Transaction> transactions, List<Holder> holders) {
+    public JSONObject holderChart(Integer industryCount, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks, List<Transaction> transactions, List<Holder> holders) {
 
         HashMap<String, CompanyInfo> companyInfoHashMap = new HashMap<>();
-        monitorService.updateDongCaiIndustry(companyInfos,companyInfoHashMap);
+        monitorService.updateDongCaiIndustry(industryCount, companyInfos,companyInfoHashMap);
         HashMap<String, List<Transaction>> transactionHashMap = new HashMap<>();
         HashSet<Date> reportDates = new HashSet<>();
         HashMap<String, Double> tenFlowHolderRatioHashMap = tenFlowHolderRatioHashMap(holders);

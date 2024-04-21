@@ -25,7 +25,7 @@
     },
     created() {
       this.$eventBus.$on( 'monitor' , (blackName)=>{
-        fetch("http://localhost:28003/monitor/selectPlateBlock/" +blackName)
+        fetch("http://192.168.1.5:28003/monitor/selectPlateBlock/" +blackName)
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tranData = res;

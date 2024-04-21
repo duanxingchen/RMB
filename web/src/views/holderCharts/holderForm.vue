@@ -145,6 +145,18 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="行业拆分数量(默认50)">
+        <el-select v-model="form.industryCount" placeholder="请选数量">
+          <el-option label="10" value="10"></el-option>
+          <el-option label="20" value="20"></el-option>
+          <el-option label="30" value="30"></el-option>
+          <el-option label="50" value="50"></el-option>
+          <el-option label="70" value="70"></el-option>
+          <el-option label="100" value="100"></el-option>
+          <el-option label="200" value="200"></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>

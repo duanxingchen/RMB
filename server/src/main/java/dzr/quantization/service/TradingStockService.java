@@ -16,6 +16,7 @@ import dzr.transaction.entity.Transaction;
 import dzr.transaction.mapper.TransactionMapper;
 import dzr.web.controller.MonitorController;
 import dzr.web.controller.TranController;
+import dzr.web.service.todo.Form;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -121,7 +122,10 @@ public class TradingStockService {
 
     private String getBlockPrice(int num ) {
         Date[] dates = {DateUtils.dateToDate(transDays.getBeforeDate(num),"yyyy-MM-dd"),DateUtils.dateToDate(DateUtils.getNowDate(),"yyyy-MM-dd")};
-        JSONObject selectTranHotChartByDate = tranController.selectTranHotChartByDate(dates);
+        Form form = new Form();
+        form.setDates(dates);
+        form.setIndustryCount(50);
+        JSONObject selectTranHotChartByDate = tranController.selectTranHotChartByDate(form);
         JSONArray dongCaiIndustry = selectTranHotChartByDate.getJSONArray("dongCaiIndustry");
         String text = "\n\n" + num + "天板块涨幅 \n";
         for (int i = dongCaiIndustry.size() - 1 ; i > dongCaiIndustry.size() -10; i--) {

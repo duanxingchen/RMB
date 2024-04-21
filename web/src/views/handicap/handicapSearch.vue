@@ -17,7 +17,7 @@
         },
      methods:{
         submit: function () {
-          fetch("http://localhost:28003/info/securityCode/all")
+          fetch("http://192.168.1.5:28003/info/securityCode/all")
             .then(res => res.json()).then(res => {
             console.log(res);
             for (let i = 0; i < res.length; i++) {
@@ -34,7 +34,7 @@
 
         },
         addStock: function () {
-          fetch("http://localhost:28003/recommend/addStock",{
+          fetch("http://192.168.1.5:28003/recommend/addStock",{
             method: 'PUT',
             headers:{"content-type":"application/json"},
             body:JSON.stringify({

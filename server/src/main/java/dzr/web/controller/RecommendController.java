@@ -93,8 +93,9 @@ public class RecommendController {
         List<CompanyInfo> companyInfos =  companyInfoMapper.selectAll();
         List<ConceptStock> conceptStocks = conceptStockMapper.selectAll();
         List<Holder> holders = selectHolderAll(form);
-       return recommendService.holderChart(holders,companyInfos,conceptStocks);
+       return recommendService.holderChart(form,holders,companyInfos,conceptStocks);
     }
+
 
 
 

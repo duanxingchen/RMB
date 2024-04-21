@@ -26,7 +26,7 @@
     created() {
 
       this.$eventBus.$on( 'handicap' , (code)=>{
-        fetch("http://localhost:28003/handicap/selectOneHandCount/" +code)
+        fetch("http://192.168.1.5:28003/handicap/selectOneHandCount/" +code)
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tranData = res;

@@ -183,7 +183,7 @@
     methods:{
       showFun(data){
           console.info(data);
-         fetch("http://localhost:28003/recommend/selectHolderAll",
+         fetch("http://192.168.1.5:28003/recommend/selectHolderAll",
            {
              method: 'post',
              body: JSON.stringify(data),

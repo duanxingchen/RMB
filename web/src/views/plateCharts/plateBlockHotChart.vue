@@ -55,7 +55,7 @@
 
     methods: {
       submit(value){
-        fetch("http://localhost:28003/monitor/selectPlateBlockHotChart/",
+        fetch("http://192.168.1.5:28003/monitor/selectPlateBlockHotChart/",
           {
             method: 'post',
             body: JSON.stringify(value),

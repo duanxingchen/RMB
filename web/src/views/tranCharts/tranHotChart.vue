@@ -1,6 +1,16 @@
 <template>
   <div>
        <date-picker/>
+    <el-tag>行业拆分数量(默认50)</el-tag>
+    <el-select v-model="form.industryCount" placeholder="请选数量">
+      <el-option label="10" value="10"></el-option>
+      <el-option label="20" value="20"></el-option>
+      <el-option label="30" value="30"></el-option>
+      <el-option label="50" value="50"></el-option>
+      <el-option label="70" value="70"></el-option>
+      <el-option label="100" value="100"></el-option>
+      <el-option label="200" value="200"></el-option>
+    </el-select>
     <filter-industry :fatherRes="res"/>
     <el-container style='border: 1px solid #eee'>
     <el-aside width="50%" >
@@ -34,6 +44,10 @@
     },
     data() {
       return {
+        form:{
+          industryCount:'',
+          dates:''
+        },
         res:{}
       }
     },
@@ -42,10 +56,11 @@
     },
     methods: {
       submit(value){
-        fetch("http://localhost:28003/tran/selectTranHotChartByDate/",
+        this.form.dates =value;
+        fetch("http://192.168.1.5:28003/tran/selectTranHotChartByDate/",
           {
             method: 'post',
-            body: JSON.stringify(value),
+            body: JSON.stringify(this.form),
             headers: {
               'Content-Type': 'application/json'
             }}).then(res =>res.json()).then(res => {

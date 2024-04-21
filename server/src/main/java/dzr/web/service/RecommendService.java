@@ -31,5 +31,5 @@ public interface RecommendService {
 
 
 
-    JSONObject holderChart(List<Holder> holders, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks);
+    JSONObject holderChart(String form, List<Holder> holders, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks);
 }

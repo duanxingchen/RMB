@@ -1,5 +1,6 @@
 package dzr.web.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import dzr.common.utils.DateUtils;
@@ -78,7 +79,7 @@ public class MonitorServiceImpl implements MonitorService {
     public JSONArray plateBlockCount(List<CompanyInfo> companyInfos, List<PlateStock> plateStocks) {
         this.companyInfos = companyInfos;
         HashMap<String, CompanyInfo> map = new HashMap<>();
-        updateDongCaiIndustry(companyInfos,map);
+        updateDongCaiIndustry(null, companyInfos,map);
 
         plateStocks.forEach(plateStock -> plateStock.setDongcaiIndustry(map.get(plateStock.getCode()).getDongcaiIndustry()));
         JSONArray array = new JSONArray();
@@ -94,10 +95,12 @@ public class MonitorServiceImpl implements MonitorService {
 
     /**
      * 根据东财行业，拆分东财分组
+     * @param industryCount
      * @param companyInfos
      * @param map
      */
-    public void updateDongCaiIndustry(List<CompanyInfo> companyInfos, HashMap<String, CompanyInfo> map) {
+    public void updateDongCaiIndustry(Integer industryCount, List<CompanyInfo> companyInfos, HashMap<String, CompanyInfo> map) {
+        HashMap<String, String> companyHashMap = new HashMap<>();
         companyInfos.forEach(companyInfo -> {
             if (companyInfo.getDongcaiIndustry() != null){
                 map.put(companyInfo.getCode(),companyInfo);
@@ -107,26 +110,56 @@ public class MonitorServiceImpl implements MonitorService {
         /**
          * 当行业板块少于50支股票时，向上合并行业板块
          */
+
+        if (industryCount == null){
+            industryCount = 50;
+        }
+        Integer finalIndustryCount = industryCount;
         companyMap.forEach((industry, company) -> {
-            if (company.size() < 50){
+            if (company.size() < finalIndustryCount.intValue()){
                 company.forEach(companyInfo -> {
                     String[] split = companyInfo.getDongcaiIndustry().split("-");
                     companyInfo.setDongcaiIndustry(split[0] + "-" + split[1]);
                     map.put(companyInfo.getCode(),companyInfo);
+                    companyHashMap.put( split[0] + "-" + split[1]+"-"+split[2],companyInfo.getDongcaiIndustry());
                 });
             }
         });
 
         companyMap = map.values().stream().collect(Collectors.groupingBy(CompanyInfo::getDongcaiIndustry));
         companyMap.forEach((industry, company) -> {
-            if (company.size() < 50){
+            if (company.size() < finalIndustryCount.intValue()){
                 company.forEach(companyInfo -> {
                     String[] split = companyInfo.getDongcaiIndustry().split("-");
                     companyInfo.setDongcaiIndustry(split[0]);
                     map.put(companyInfo.getCode(),companyInfo);
+                    companyHashMap.put(split[0] + "-" + split[1],companyInfo.getDongcaiIndustry());
                 });
             }
         });
+
+        HashMap<String, String> finalMap = new HashMap<>();
+        companyHashMap.forEach((k,v)->{
+            String[] split = k.split("-");
+            if (split.length == 2){
+                k = split[1];
+            }else {
+                k = split[2];
+            }
+
+            if(finalMap.get(v) == null){
+                finalMap.put(v,k);
+            }else {
+                finalMap.put(v,finalMap.get(v) + "|" + k);
+            }
+        });
+        map.forEach((code,companyInfo)->{
+            String industryName = finalMap.get(companyInfo.getDongcaiIndustry());
+            if (industryName != null){
+                companyInfo.setDongcaiIndustry(companyInfo.getDongcaiIndustry() + "(" +  industryName + ")");
+            }
+        });
+
     }
 
     @Override
@@ -264,7 +297,7 @@ public class MonitorServiceImpl implements MonitorService {
     @Override
     public JSONObject plateBlockCountHotChart(List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks, List<PlateStock> plateStocks) {
         HashMap<String, CompanyInfo> companyInfoHashMap = new HashMap<>();
-        updateDongCaiIndustry(companyInfos,companyInfoHashMap);
+        updateDongCaiIndustry(null, companyInfos,companyInfoHashMap);
         HashMap<String, List<PlateStock>> plateStockHashMap = new HashMap<>();
         HashSet<Date> reportDates = new HashSet<>();
 

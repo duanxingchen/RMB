@@ -16,13 +16,13 @@ import dzr.plate.mapper.PlateStockMapper;
 import dzr.transaction.entity.Transaction;
 import dzr.transaction.mapper.TransactionMapper;
 import dzr.web.service.TranService;
+import dzr.web.service.todo.Form;
 import dzr.web.service.todo.TranFrom;
 import groovy.util.logging.Log4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -45,12 +45,12 @@ public class TranController {
 
 
     @RequestMapping(method = RequestMethod.POST,value = "/selectTranHotChartByDate")
-    public JSONObject selectTranHotChartByDate(@RequestBody Date[] dates) {
+    public JSONObject selectTranHotChartByDate(@RequestBody Form form) {
         List<CompanyInfo> companyInfos =  companyInfoMapper.selectAll();
         List<ConceptStock> conceptStocks = conceptStockMapper.selectAll();
-        List<Transaction> transactions = transactionMapper.selectReinstatementDataTypeByReportDates(dates[0],dates[1]);
+        List<Transaction> transactions = transactionMapper.selectReinstatementDataTypeByReportDates(form.getDates()[0],form.getDates()[1]);
         List<Holder> holders = holderMapper.selectAll();
-        return tranService.holderChart(companyInfos,conceptStocks,transactions,holders);
+        return tranService.holderChart(form.getIndustryCount(),companyInfos,conceptStocks,transactions,holders);
     }
 
 

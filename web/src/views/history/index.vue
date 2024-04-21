@@ -26,7 +26,7 @@
     },
     methods: {
       load() {
-        fetch("http://localhost:28003/user/page?pageNum="+this.pageNum+"&pageSize=" + this.pageSize + "&username=" + this.username)
+        fetch("http://192.168.1.5:28003/user/page?pageNum="+this.pageNum+"&pageSize=" + this.pageSize + "&username=" + this.username)
           .then(res => res.json()).then(res => {
           console.log(res)
           this.tableData = res.data

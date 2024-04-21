@@ -15,7 +15,7 @@ import java.util.List;
  * @Description:
  */
 public interface TranService {
-    JSONObject holderChart(List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks, List<Transaction> transactions, List<Holder> holders);
+    JSONObject holderChart(Integer industryCount, List<CompanyInfo> companyInfos, List<ConceptStock> conceptStocks, List<Transaction> transactions, List<Holder> holders);
 
     JSONObject tranChart(List<Transaction> transactions, List<Holder> holders);
 }

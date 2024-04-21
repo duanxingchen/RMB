@@ -72,7 +72,7 @@
       }
     },
     created() {
-        fetch("http://localhost:28003/fund/selfFund/selectAll")
+        fetch("http://192.168.1.5:28003/fund/selfFund/selectAll")
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tableData = [];
