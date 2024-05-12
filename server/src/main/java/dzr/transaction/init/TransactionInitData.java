@@ -106,7 +106,13 @@ public class TransactionInitData  {
     private Date getNewestReportDate(SecurityCode securityCode){
         Transaction transaction = transactionMapper.selectNewestByCode(securityCode.getCode());
         if (transaction == null || transaction.getReportDate() == null){
-            return securityCode.getListingDate();
+
+            if (DateUtils.differentDays(DateUtils.getNowDate(),securityCode.getListingDate()) >200){
+                return DateUtils.getBeforeDate(200);
+            }else {
+                return securityCode.getListingDate();
+            }
+
         }
         return transaction.getReportDate();
     }

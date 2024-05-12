@@ -27,7 +27,7 @@ export function hotChartHandler(elementId, chart, xAxi, yAxiLeft, yAixRight, dat
         data: xAxi,
         splitArea: {
           show: true
-        }
+        },
       },{
         type: 'category',
         data: xAxi,
@@ -43,7 +43,18 @@ export function hotChartHandler(elementId, chart, xAxi, yAxiLeft, yAixRight, dat
           splitArea: {
             show: true
           },
-          position:'left'
+          position:'left',
+          axisLabel:{
+            show: true,
+            fontSize:11,
+            formatter: function (value) {
+              if (value.length > 9) {
+                return `${value.slice(0, 9)}` + '\n' + `${value.slice(9, value.length)}`
+              }
+              return value;
+            }
+          }
+
         },
         {
           type: 'category',
@@ -124,7 +135,19 @@ export function coordinateChartHandler(elementId,chart,source,xDataName,yDataNam
       left:'100px'
     },
     xAxis: {name: xDataName},
-    yAxis: {type: 'category'},
+    yAxis: {
+      type: 'category',
+      axisLabel:{
+        show: true,
+        fontSize:11,
+        formatter: function (value) {
+          if (value.length > 9) {
+            return `${value.slice(0, 9)}` + '\n' + `${value.slice(9, value.length)}`
+          }
+          return value;
+        }
+      }
+    },
     visualMap: {
       orient: 'horizontal',
       left: 'center',
