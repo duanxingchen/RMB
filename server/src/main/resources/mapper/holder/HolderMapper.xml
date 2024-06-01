@@ -37,13 +37,14 @@
     <result column="industry_big" jdbcType="VARCHAR" property="industryBig" />
     <result column="industry_middle" jdbcType="VARCHAR" property="industryMiddle" />
     <result column="listing_date" jdbcType="TIMESTAMP" property="listingDate" />
+    <result column="change_price_holder_down" jdbcType="DOUBLE" property="changePriceWithHolderDown" />
   </resultMap>
 
   <sql id="Base_Column_List">
     id, code, name, holder_name,report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
     sort_1_3, sort_1_4, sort_1_5, sort_1_6, sort_1_7, sort_1_8, sort_1_9,count,days, market,avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, create_time, update_time, dong_cai_industry, industry_big,
-    industry_middle, listing_date
+    industry_middle, listing_date,change_price_holder_down
   </sql>
 
 
@@ -52,14 +53,14 @@
     (code, name,holder_name, report_date,price_ratio,notice_price,price,maker_vs_san_hu_ratio, holder_num,oder_num3,oder_num5, sort_1_2,
     sort_1_3, sort_1_4, sort_1_5, sort_1_6, sort_1_7, sort_1_8, sort_1_9, count,days,market, avg_assets, flow_market, ten_flow_holder_ratio,
     makers_ratio,makers_cost, san_hu_ratio, dong_cai_industry, industry_big,
-    industry_middle, listing_date)
+    industry_middle, listing_date,change_price_holder_down)
     values
       (#{code},#{name},#{holderName},#{reportDate},#{priceRatio},#{noticePrice},#{price},#{makerVsSanHuRatio},
       #{holderNum},#{oderNum3},#{oderNum5},#{sort12},#{sort13},
       #{sort14},#{sort15},#{sort16},#{sort17},#{sort18},#{sort19},#{count},#{days},
       #{market},#{avgAssets},#{flowMarket},#{tenFlowHolderRatio},
       #{makersRatio},#{makersCost},#{sanHuRatio},#{dongCaiIndustry},
-      #{industryBig},#{industryMiddle},#{listingDate})
+      #{industryBig},#{industryMiddle},#{listingDate},#{changePriceWithHolderDown})
     on duplicate key update update_time = now()
   </insert>
 

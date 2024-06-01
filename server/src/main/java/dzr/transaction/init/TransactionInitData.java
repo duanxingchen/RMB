@@ -107,8 +107,8 @@ public class TransactionInitData  {
         Transaction transaction = transactionMapper.selectNewestByCode(securityCode.getCode());
         if (transaction == null || transaction.getReportDate() == null){
 
-            if (DateUtils.differentDays(DateUtils.getNowDate(),securityCode.getListingDate()) >200){
-                return DateUtils.getBeforeDate(200);
+            if (DateUtils.differentDays(DateUtils.getNowDate(),securityCode.getListingDate()) >2000){
+                return DateUtils.getBeforeDate(2000);
             }else {
                 return securityCode.getListingDate();
             }

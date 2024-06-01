@@ -155,4 +155,9 @@ public class Holder implements Serializable {
      */
     private Date listingDate;
 
+    /**
+     * 股东人数减少时，价格的变化
+     */
+    private Double changePriceWithHolderDown;
+
 }

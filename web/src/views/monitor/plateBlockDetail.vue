@@ -210,7 +210,7 @@
     },
     created: function () {
       this.$eventBus.$on( 'monitor' , (blackName)=> {
-        fetch("http://192.168.1.5:28003/monitor/selectPlateBlockDetail/"+blackName)
+        fetch("http://192.168.1.6:28003/monitor/selectPlateBlockDetail/"+blackName)
           .then(res => res.json()).then(res => {
           console.log(res);
           this.tableData = [];

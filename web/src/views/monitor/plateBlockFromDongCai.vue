@@ -74,7 +74,7 @@
       }
     },
     created() {
-      fetch("http://192.168.1.5:28003/monitor/selectPlateBlockFromDongCai/")
+      fetch("http://192.168.1.6:28003/monitor/selectPlateBlockFromDongCai/")
         .then(res =>res.json()).then(res => {
         console.log(res);
         this.tableData = [];

@@ -150,9 +150,9 @@ public class HolderTest {
         /**
          * 初始化数据
          */
-        holderNumInitData();
-        transactionInitData();
-        plateStockInitData();
+        //holderNumInitData();
+        //transactionInitData();
+        //plateStockInitData();
         /**
          * 计算股东人数
          */
@@ -160,7 +160,7 @@ public class HolderTest {
         /**
          * 跟踪股票，发钉钉
          */
-        tradingStockService.noticePrice();
+        //tradingStockService.noticePrice();
         //costService.calculate();
     }
 

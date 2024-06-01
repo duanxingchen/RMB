@@ -49,7 +49,7 @@
     },
     created() {
       this.$eventBus.$on( 'recommend' , (data)=>{
-        fetch("http://192.168.1.5:28003/recommend/selectHolderChart/",
+        fetch("http://192.168.1.6:28003/recommend/selectHolderChart/",
           {
             method: 'post',
             body: JSON.stringify(data),

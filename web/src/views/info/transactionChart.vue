@@ -35,7 +35,7 @@
 
 
       this.$eventBus.$on( 'info' , (code)=>{
-        fetch("http://192.168.1.5:28003/info/transaction/" +code)
+        fetch("http://192.168.1.6:28003/info/transaction/" +code)
           .then(res =>res.json()).then(res => {
           console.log(res);
           console.log("transaction");

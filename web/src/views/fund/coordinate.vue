@@ -50,7 +50,7 @@
     },
     created() {
       this.$eventBus.$on( 'fund' , (holderName)=>{
-        fetch("http://192.168.1.5:28003/fund/coordinate/" + holderName)
+        fetch("http://192.168.1.6:28003/fund/coordinate/" + holderName)
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tableData = [];

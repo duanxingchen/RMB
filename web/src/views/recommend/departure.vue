@@ -145,7 +145,7 @@
       }
     },
     created() {
-        fetch("http://192.168.1.5:28003/recommend/departure/selectAll")
+        fetch("http://192.168.1.6:28003/recommend/departure/selectAll")
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tableData = [];
@@ -181,7 +181,7 @@
     },
     methods:{
       deleteStock: function (row) {
-        fetch("http://192.168.1.5:28003/recommend/deleteStock/"+row.code)
+        fetch("http://192.168.1.6:28003/recommend/deleteStock/"+row.code)
           .then(res => res.text()).then(res =>
           console.info(res)
         )

@@ -101,7 +101,7 @@ public class HolderServiceImpl implements HolderService {
                  */
                 initiateHolderNums(holderNums);
                 /**
-                 * 用于主力风格计算
+                 * 用于主力风格计算,最近2年的股东人数
                  */
                 holderNumsOld = holderNums.stream().filter(holderNum -> (System.currentTimeMillis() - holderNum.getReportDate().getTime())/365/24/3600000 < 2)
                         .sorted(Comparator.comparing(HolderNum::getReportDate).reversed()).collect(Collectors.toList());
@@ -132,7 +132,7 @@ public class HolderServiceImpl implements HolderService {
                  */
                 calculateFlowMarket();
                 /**
-                 * 庄家成本
+                 * 庄家成本、判断是主力建仓还是主力出货后股东人数自然减少
                  */
                 calculateMakersCost();
                 /**
@@ -335,13 +335,15 @@ public class HolderServiceImpl implements HolderService {
 
 
         private void calculateMakersCost() {
-            HolderNum moreHolderNum = holderNums.get(0);
             int moreLocation = 0;
+            double moreRate = 1.0;
 
-            for (int i = 0; i < holderNums.size() && i < 6; i++) {
-                if (holderNums.get(i).getHolderNum() > moreHolderNum.getHolderNum()){
-                    moreHolderNum = holderNums.get(i);
-                    moreLocation = i;
+
+            for (int i = 0; i < holderNums.size() -1 && i < 9; i++) {
+                double rate = holderNums.get(i + 1).getHolderNum() / (holderNums.get(i).getHolderNum() * 1.0);
+                if (rate > moreRate){
+                    moreLocation = i + 1;
+                    moreRate = rate;
                 }
             }
 
@@ -371,6 +373,19 @@ public class HolderServiceImpl implements HolderService {
                 });
                 holder.setMakersCost(cost.get());
             }
+
+            /**判断是主力建仓还是主力出货后股东人数自然减少**/
+
+            if (moreLocation > 0){
+                Date startDate = holderNums.get(moreLocation).getReportDate();
+                Date endDate = holderNums.get(moreLocation -1).getReportDate();
+
+                double startPrice = this.transactions.stream().filter(transaction -> transaction.getReportDate().getTime() <= startDate.getTime()).findFirst().get().getTclose();
+                double endPrice = this.transactions.stream().filter(transaction -> transaction.getReportDate().getTime() <= endDate.getTime()).findFirst().get().getTclose();
+                holder.setChangePriceWithHolderDown(MathUtils.doubleRetain2Bit((endPrice-startPrice)/startPrice*100));
+
+            }
+
 
         }
 

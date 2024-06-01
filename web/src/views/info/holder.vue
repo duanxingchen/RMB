@@ -69,7 +69,7 @@
     },
     created() {
       this.$eventBus.$on( 'info' , (code)=>{
-        fetch("http://192.168.1.5:28003/info/holder/" +code)
+        fetch("http://192.168.1.6:28003/info/holder/" +code)
           .then(res =>res.json()).then(res => {
           console.log(res);
             this.reportDate = dateFormat(res.reportDate)
