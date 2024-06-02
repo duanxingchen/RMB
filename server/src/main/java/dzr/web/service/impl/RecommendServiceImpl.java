@@ -131,6 +131,8 @@ public class RecommendServiceImpl implements RecommendService {
         data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort18).average().getAsDouble()*100-100));
         data.add(MathUtils.doubleRetain2Bit(ho.stream().mapToDouble(Holder::getSort19).average().getAsDouble()*100-100));
 
+        double asDouble = ho.stream().mapToDouble(Holder::getSort19).average().getAsDouble();
+
         double flowMarket = ho.stream().mapToDouble(Holder::getFlowMarket).sum();
         double tenFlowHolderRatio = ho.stream().mapToDouble(Holder::getTenFlowHolderRatio).average().getAsDouble();
         jsonObject.put("sum",data.stream().mapToDouble(Double::doubleValue).sum());
@@ -360,16 +362,58 @@ public class RecommendServiceImpl implements RecommendService {
                         return true;
                     }
                     return false;
-                })
-                .filter(holder -> {
+        }).filter(holder -> {
                     String oderNum5 = condition.getString("oderNum5");
                     if (oderNum5.equals("") ||
                             (holder.getOderNum5() != null && holder.getOderNum5() <= Integer.valueOf(oderNum5))){
                         return true;
                     }
                     return false;
-                }).collect(Collectors.toList());
+        }).filter(holder -> {
+                    String changePriceWithHolderDown = condition.getString("changePriceWithHolderDown");
+                    if (changePriceWithHolderDown.equals("") ||
+                            (holder.getChangePriceWithHolderDown() != null && holder.getChangePriceWithHolderDown() >= Double.valueOf(changePriceWithHolderDown)*100.0)){
+                        return true;
+                    }
+                    return false;
+        }).filter(holder -> {
+                    String sortBigValue = condition.getString("sortBigValue");
+                    if (sortBigValue.equals("") || getSortBigValue(holder) >= Double.valueOf(sortBigValue)){
+                        return true;
+                    }
+                    return false;
+        }).collect(Collectors.toList());
 
         return collect;
+    }
+
+    private Double getSortBigValue(Holder holder) {
+        Double bigValue = 0.0;
+        if (holder.getSort12() > bigValue){
+            bigValue= holder.getSort12();
+        }
+        if (holder.getSort13() > bigValue){
+            bigValue= holder.getSort13();
+        }
+        if (holder.getSort14() > bigValue){
+            bigValue= holder.getSort14();
+        }
+        if (holder.getSort15() > bigValue){
+            bigValue= holder.getSort15();
+        }
+        if (holder.getSort16() > bigValue){
+            bigValue= holder.getSort16();
+        }
+        if (holder.getSort17() > bigValue){
+            bigValue= holder.getSort17();
+        }
+        if (holder.getSort18() > bigValue){
+            bigValue= holder.getSort18();
+        }
+        if (holder.getSort19() > bigValue){
+            bigValue= holder.getSort19();
+        }
+
+        return bigValue;
     }
 }

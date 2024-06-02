@@ -154,8 +154,11 @@
               >
             </el-table-column>
           </el-table>
-        </div>
 
+        </div>
+        <el-descriptions title="统计">
+        <el-descriptions-item label="股票总数量：" v-bind:value = stockCount >{{stockCount}}</el-descriptions-item>
+        </el-descriptions>
       </el-main>
 
     </el-container>
@@ -174,7 +177,8 @@
     components: {HolderChart, HolderForm},
     data() {
       return {
-        tableData:[]
+        tableData:[],
+        stockCount:0
       }
     },
     created() {
@@ -191,7 +195,7 @@
                'Content-Type': 'application/json'
              }}).then(res =>res.json()).then(res => {
           console.log(res);
-
+            this.stockCount = res.length;
            this.tableData = [];
           for (let i = 0; i < res.length; i++) {
             let re = res[i];

@@ -157,6 +157,32 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="股东人数减少时，股价变化率大于">
+        <el-select v-model="form.changePriceWithHolderDown" placeholder="请选数量">
+          <el-option label="30%" value="0.3"></el-option>
+          <el-option label="20%" value="0.2"></el-option>
+          <el-option label="10%" value="0.1"></el-option>
+          <el-option label="0%" value="0.0"></el-option>
+          <el-option label="-10%" value="-0.1"></el-option>
+          <el-option label="-20%" value="-0.2"></el-option>
+          <el-option label="-30%" value="-0.3"></el-option>
+          <el-option label="清空" value=""></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="sort1-2-3-4-5-6-7-8-9中最大值大于（当前主力还在）">
+        <el-select v-model="form.sortBigValue" placeholder="请选数量">
+          <el-option label="2.0" value="2.0"></el-option>
+          <el-option label="1.7" value="1.7"></el-option>
+          <el-option label="1.5" value="1.5"></el-option>
+          <el-option label="1.4" value="1.4"></el-option>
+          <el-option label="1.3" value="1.3"></el-option>
+          <el-option label="1.2" value="1.2"></el-option>
+          <el-option label="1.1" value="1.1"></el-option>
+          <el-option label="清空" value=""></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
@@ -187,7 +213,9 @@
           listingDate: '',
           reportDate: '',
           detailCount: '',
-          energy:''
+          energy:'',
+          changePriceWithHolderDown:'',
+          sortBigValue:''
         }
       }
     },
