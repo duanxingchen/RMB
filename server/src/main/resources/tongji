@@ -39,5 +39,7 @@ select industry_middle, count(*) as num  from statistics.holder where sort_1_2 >
 
 
 
-
-
+UPDATE security_code
+LEFT JOIN company_info
+on security_code.`code` = company_info.`code`
+SET security_code.listing_date =company_info.listing_date;
