@@ -7,6 +7,7 @@ import dzr.holder.mapper.HolderMapper;
 import dzr.holder.service.impl.HolderServiceImpl;
 import dzr.info.entity.SecurityCode;
 import dzr.info.init.CompanyInfoInitData;
+import dzr.info.init.ConceptStockInitData;
 import dzr.info.init.SecurityCodeInitData;
 import dzr.info.mapper.SecurityCodeMapper;
 import dzr.organization.init.OrganizationDetailsHolderInitData;
@@ -92,6 +93,14 @@ public class HolderTest {
     @Autowired
     TradingStockService tradingStockService;
 
+    @Autowired
+    ConceptStockInitData conceptStockInitData;
+
+    @Test
+    public void conceptStockInitData(){
+        conceptStockInitData.remountPullDataFromWeb();
+    }
+
     @Test
     public void plateStockInitData(){
         plateStockInitData.remountPullDataFromWeb();
@@ -150,8 +159,8 @@ public class HolderTest {
         /**
          * 初始化数据
          */
-        holderNumInitData();
-        transactionInitData();
+        //holderNumInitData();
+        //transactionInitData();
         //plateStockInitData();
         /**
          * 计算股东人数

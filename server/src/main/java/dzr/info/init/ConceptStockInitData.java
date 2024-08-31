@@ -139,7 +139,14 @@ public class ConceptStockInitData  {
                     }
                 }
             }
-            conceptStockMapper.batchInsert(conceptStocks);
+            try {
+                if (conceptStocks.size() > 0) {
+                    conceptStockMapper.batchInsert(conceptStocks);
+                }
+            }catch (Exception exception){
+                exception.printStackTrace();
+            }
+
         });
     }
 }

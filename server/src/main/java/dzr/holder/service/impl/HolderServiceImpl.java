@@ -55,6 +55,7 @@ public class HolderServiceImpl implements HolderService {
             List<Transaction> transactions = transactionMapper.selectReinstatementByCode(securityCode.getCode());
             List<OrganizationDetailsHolder> organizationDetailsHolders = organizationDetailsHolderMapper.selectByCode(securityCode.getCode());
 
+
             if (holderNums.size() > 0 && transactions.size() >0){
                 log.info(securityCode.toString());
                 HolderDto holderDto = new HolderDto(securityCode, new Holder(), holderNums, transactions, companyInfo, tenFlowHolders,organizationDetailsHolders);
