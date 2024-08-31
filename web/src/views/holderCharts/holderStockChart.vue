@@ -83,7 +83,7 @@
         console.info(form);
 
 
-        fetch("http://192.168.1.6:28003/tran/selectTranHotChartByCodes/",
+        fetch("http://127.0.0.1:28003/tran/selectTranHotChartByCodes/",
           {
             method: 'post',
             body: JSON.stringify(form),

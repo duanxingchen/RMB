@@ -60,7 +60,7 @@
     },
     created() {
       this.$eventBus.$on( 'info' , (code)=>{
-        fetch("http://192.168.1.6:28003/info/holderNum/" +code)
+        fetch("http://127.0.0.1:28003/info/holderNum/" +code)
           .then(res =>res.json()).then(res => {
           console.log(res);
           this.tableData = [];
