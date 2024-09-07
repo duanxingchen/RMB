@@ -39,7 +39,7 @@ public class OrganizationDetailsHolderInitData {
                 log.info(securityCode.toString());
                 ArrayList<OrganizationDetailsHolder> organizationDetailsHolders = new ArrayList<>();
 
-                List<String> reportDates =  ReportDateUtils.getNewestFixedReportDatesString(2);
+                List<String> reportDates =  ReportDateUtils.getNewestFixedReportDatesString(8);
 
                 for (int j = 0; j < reportDates.size(); j++) {
                     int pages = getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),1);
@@ -74,10 +74,10 @@ public class OrganizationDetailsHolderInitData {
                 detailsHolder.setSecurityInnerCode(one.getString("security_inner_code"));
                 detailsHolder.setReportDate(DateUtils.strToDate(one.getString("report_date")));
                 detailsHolder.setHolderCode(one.getString("holder_code"));
-                detailsHolder.setHolderName(one.getString("holder_name"));
+                detailsHolder.setHolderName(changeNullToEmptyString(one.getString("holder_name")));
                 detailsHolder.setParentOrgCode(one.getString("parent_org_code"));
                 detailsHolder.setParentOrgCodeOld(one.getString("parent_orgcode_old"));
-                detailsHolder.setParentOrgName(one.getString("parent_org_name"));
+                detailsHolder.setParentOrgName(changeNullToEmptyString(one.getString("parent_org_name")));
                 detailsHolder.setOrgTypeCode(one.getString("org_type_code"));
                 detailsHolder.setOrgType(one.getString("org_type"));
                 detailsHolder.setTotalShares(one.getLong("total_shares"));
@@ -87,7 +87,6 @@ public class OrganizationDetailsHolderInitData {
                 detailsHolder.setNetAssetRatio(one.getDouble("netasset_ratio"));
                 detailsHolder.setOrgNameAbbr(one.getString("org_name_abbr"));
                 organizationDetailsHolders.add(detailsHolder);
-
             }
 
             return page;
@@ -95,4 +94,7 @@ public class OrganizationDetailsHolderInitData {
         return 0;
     }
 
+    private String changeNullToEmptyString(String str) {
+        return str == null ? "" : str;
+    }
 }

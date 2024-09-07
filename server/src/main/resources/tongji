@@ -1,45 +1,167 @@
---行业统计
-
-select * from  statistics.holder where listing_date < '2022-01-01' and  report_date > '2023-12-01'  and name not like '%st%'
-order by sort_1_2 desc;
-
-
---行业个股
-select * from  statistics.holder where listing_date < '2021-01-01' and  report_date > '2023-12-01'  and name not like '%st%'   and industry_middle like '%用机械%'
-and LEAST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 0.9
-order by sort_1_2 desc;
-
-
---个股
-select * from  statistics.holder where listing_date < '2021-01-01' and  report_date > '2023-1-01' and oder_num5 <4 and name not like '%st%'
-and GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 1.5 and GREATEST(sort_1_2,sort_1_3,sort_1_4) > 1.5 and flow_market < 50
-order by GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) desc;
+select * from  statistics.holder  h
+left join total_operate_income t
+on h.`code`= t.`code`
+WHERE h.listing_date < '2021-01-01' and  h.report_date > '2024-06-01'  and h.name not like '%st%'
+and GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 1.7  and oder_num5 < 3 AND 
+LEAST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) > 0.8  and flow_market < 50000 and change_price_holder_down > 0
+ORDER BY price_ratio ;
+ORDER BY by GREATEST(sort_1_2,sort_1_3,sort_1_4,sort_1_5,sort_1_6,sort_1_7,sort_1_8,sort_1_9) desc;
 
 
 
---私募最多的行业统计（数量）
-select industry_big, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21' group by industry_big order by num desc;
-select industry_middle, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21'  group by industry_middle order by num desc;
-
-
---股东人数减少的行业统计（数量）
-select industry_big, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_big order by num desc;
-select industry_middle, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_middle order by num desc;
-
-
-
---私募最多的行业统计（占比）
-select industry_big, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21' group by industry_big order by num desc;
-select industry_middle, count(*) as num  from statistics.holder where holder_name is not null and  report_date > '2023-12-21'  group by industry_middle order by num desc;
-
-
---股东人数减少的行业统计（占比）
-select industry_big, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_big order by num desc;
-select industry_middle, count(*) as num  from statistics.holder where sort_1_2 >1.1 and  report_date > '2023-12-21'  group by industry_middle order by num desc;
+SELECT dongcai_industry ,odh.report_date,count(*) as cc
+FROM  `security`.company_info cf
+left join `security`.organization_details_holder odh
+ON cf.`code`= odh.`code`
+GROUP BY cf.dongcai_industry,odh.report_date
+ORDER BY cf.dongcai_industry,odh.report_date;
 
 
 
-UPDATE security_code
-LEFT JOIN company_info
-on security_code.`code` = company_info.`code`
-SET security_code.listing_date =company_info.listing_date;
+---分期统计，机构的数量，持股量
+
+SELECT
+ odh.report_date,
+ count(*) as num ,
+ sum(hold_market_cap)/100000000 as market,
+ sum(total_shares)/100000000 as shares,
+ sum(total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+WHERE odh.holder_name like '%私募%'
+ GROUP BY
+ odh.report_date
+ ORDER BY
+ odh.report_date desc;
+
+
+SELECT
+ odh.report_date,
+ count(*) as num ,
+ sum(hold_market_cap)/100000000 as market,
+ sum(total_shares)/100000000 as shares,
+ sum(total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+WHERE odh.holder_name like '%社保%'
+ GROUP BY
+ odh.report_date
+ ORDER BY
+ odh.report_date desc;
+
+
+SELECT
+ odh.report_date,
+ count(*) as num ,
+ sum(hold_market_cap)/100000000 as market,
+ sum(total_shares)/100000000 as shares,
+ sum(total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+WHERE odh.holder_name like '%信托%'
+ GROUP BY
+ odh.report_date
+ ORDER BY
+ odh.report_date desc;
+
+
+
+
+SELECT
+ odh.report_date,
+ count(*) as num ,
+ sum(hold_market_cap)/100000000 as market,
+ sum(total_shares)/100000000 as shares,
+ sum(total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+ GROUP BY
+ odh.report_date
+ ORDER BY
+ odh.report_date desc;
+
+
+
+
+
+
+---分期统计，机构的数量，持股量
+SELECT
+ odh.report_date,cf.dongcai_industry,
+ count(*) as num ,
+ sum(odh.hold_market_cap)/100000000 as market,
+ sum(odh.total_shares)/100000000 as shares,
+ sum(odh.total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+ left join `security`.company_info cf 
+ ON odh.code = cf.code
+WHERE odh.holder_name like '%私募%'
+ GROUP BY
+ odh.report_date,cf.dongcai_industry
+ ORDER BY
+ cf.dongcai_industry,odh.report_date desc;
+ 
+
+
+TRUNCATE table temp_org;
+
+INSERT INTO temp_org(report_date,dongcai_industry,num,market,shares,shares_ratio)
+SELECT
+ odh.report_date,cf.dongcai_industry,
+ count(*) as num ,
+ sum(odh.hold_market_cap)/100000000 as market,
+ sum(odh.total_shares)/100000000 as shares,
+ sum(odh.total_shares_ratio) as shares_ratio
+FROM
+ `security`.organization_details_holder odh
+ left join `security`.company_info cf 
+ ON odh.code = cf.code
+WHERE  odh.holder_name like '%私募%'
+ GROUP BY
+ odh.report_date,cf.dongcai_industry
+ ORDER BY
+ cf.dongcai_industry,odh.report_date desc
+ ;
+ 
+ 
+ 
+ 
+SELECT
+*,
+org1.market - org2.market as market_diff
+FROM
+temp_org org1
+left join 
+temp_org org2 
+on org1.id =org2.id - 1
+WHERE org1.dongcai_industry = org2.dongcai_industry
+AND org1.report_date = '2024-06-30'
+ORDER BY market_diff DESC;
+
+
+
+
+
+SELECT
+odh.*
+FROM
+`security`.organization_details_holder odh 
+LEFT JOIN 
+`security`.company_info ci 
+ON odh.`code` = ci.`code`
+WHERE
+ci.dongcai_industry like '%食品饮料-食品-乳制品%'
+and  odh.holder_name like '%私募%'
+and odh.report_date in ('2024-03-31','2024-06-30');
+
+SELECT
+odh.`code`,odh.parent_org_name,odh.report_date,odh.holder_name,
+count(*) as num
+FROM
+`security`.organization_details_holder odh 
+group by 
+odh.`code`,odh.parent_org_name,odh.report_date,odh.holder_name
+HAVING num >1
+
+TRUNCATE `security`.organization_details_holder
