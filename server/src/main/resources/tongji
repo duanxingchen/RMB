@@ -164,4 +164,4 @@ group by
 odh.`code`,odh.parent_org_name,odh.report_date,odh.holder_name
 HAVING num >1
 
-TRUNCATE `security`.organization_details_holder
+TRUNCATE `security`.organization_details_holder;
