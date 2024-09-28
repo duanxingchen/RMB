@@ -39,8 +39,10 @@ public class OrganizationDetailsHolderInitData {
                 log.info(securityCode.toString());
                 ArrayList<OrganizationDetailsHolder> organizationDetailsHolders = new ArrayList<>();
 
-                List<String> reportDates =  ReportDateUtils.getNewestFixedReportDatesString(8);
+                //List<String> reportDates =  ReportDateUtils.getNewestFixedReportDatesString(8);
 
+                List<String> reportDates = new ArrayList<>();
+                reportDates.add("2023-12-31");
                 for (int j = 0; j < reportDates.size(); j++) {
                     int pages = getDataFromWebReturnPages(securityCode, url, organizationDetailsHolders,reportDates.get(j),1);
                     for (int i = 1; i < pages; i++) {

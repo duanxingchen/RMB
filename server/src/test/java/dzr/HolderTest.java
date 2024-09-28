@@ -159,8 +159,8 @@ public class HolderTest {
         /**
          * 初始化数据
          */
-        //holderNumInitData();
-        //transactionInitData();
+        holderNumInitData();
+        transactionInitData();
         //plateStockInitData();
         /**
          * 计算股东人数
