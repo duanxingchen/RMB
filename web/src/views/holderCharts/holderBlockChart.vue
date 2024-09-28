@@ -6,17 +6,20 @@
           <div><el-tag >人数板块热力图</el-tag></div>
           <el-row style="height: 50px">
             <el-col >
-              <el-tag>板块股票数量</el-tag>
+              <el-tag>股票数量</el-tag>
               <el-input type="text" style="width: 200px"  suffix-icon="el-icon-search" v-model="stockNum"> {{stockNum}}</el-input>
               <el-tag>排序</el-tag>
               <el-select v-model="sortName" placeholder="请选数量">
-                <el-option label="10" value="10"></el-option>
-                <el-option label="20" value="20"></el-option>
-                <el-option label="30" value="30"></el-option>
-                <el-option label="50" value="50"></el-option>
-                <el-option label="70" value="70"></el-option>
-                <el-option label="100" value="100"></el-option>
-                <el-option label="200" value="200"></el-option>
+                <el-option label="sort12" value="sort12"></el-option>
+                <el-option label="sort13" value="sort13"></el-option>
+                <el-option label="sort14" value="sort14"></el-option>
+                <el-option label="sort15" value="sort15"></el-option>
+                <el-option label="sort16" value="sort16"></el-option>
+                <el-option label="sort17" value="sort17"></el-option>
+                <el-option label="sort18" value="sort18"></el-option>
+                <el-option label="sort19" value="sort19"></el-option>
+                <el-option label="有效股票数量" value="count"></el-option>
+                <el-option label="有效股票数量占比" value="rate"></el-option>
               </el-select>
               <el-button class="ml-5" type="primary" @click="filterSubmit">过滤</el-button>
             </el-col>
@@ -55,7 +58,7 @@
       return {
         res:{},
         stockNum: 0,
-        sortName: 'sort9'
+        sortName: ' '
       }
     },
     created() {
@@ -142,14 +145,48 @@
             conceptList.push(concept[i]);
           }
         }
-        dongCaiList.sort(function (a, b) {
-         return  a.count - b.count;
-        })
-        conceptList.sort((a, b) =>{ return a.count -b.count}
-        )
+        this.sortList(dongCaiList);
+        this.sortList(conceptList);
         filterRes['dongCaiIndustry'] = dongCaiList;
         filterRes['concept'] = conceptList;
         this.extracted(filterRes);
+      },
+
+      sortList: function (list){
+        switch (this.sortName ){
+          case "sort12":
+            list.sort((a, b) => a.data[0] - b.data[0]);
+            break;
+          case "sort13":
+            list.sort((a, b) => a.data[1] - b.data[1]);
+            break;
+          case "sort14":
+            list.sort((a, b) => a.data[2] - b.data[2]);
+            break;
+          case "sort15":
+            list.sort((a, b) => a.data[3] - b.data[3]);
+            break;
+          case "sort16":
+            list.sort((a, b) => a.data[4] - b.data[4]);
+            break;
+          case "sort17":
+            list.sort((a, b) => a.data[5] - b.data[5]);
+            break;
+          case "sort18":
+            list.sort((a, b) => a.data[6] - b.data[6]);
+            break;
+          case "sort19":
+            list.sort((a, b) => a.data[7] - b.data[7]);
+            break;
+          case "count":
+            list.sort((a, b) => a.count - b.count);
+            break;
+          case "rate":
+            list.sort((a, b) => a.count/a.size - b.count/b.size);
+            break;
+          default:
+            list.sort((a, b) => a.data[4] - b.data[4]);
+        }
       }
     }
   }
